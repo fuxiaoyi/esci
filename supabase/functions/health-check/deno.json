@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "deploy": "supabase functions deploy health-check --no-verify-jwt"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window"],
+    "strict": true
+  }
+} 

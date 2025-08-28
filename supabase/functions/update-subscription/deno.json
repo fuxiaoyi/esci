@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "serve": "deno run --allow-net --allow-env --allow-read index.ts"
+  },
+  "imports": {
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.7",
+    "jsr:@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.7",
+    "stripe": "https://esm.sh/stripe@13.2.0"
+  }
+} 
