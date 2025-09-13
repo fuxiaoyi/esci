@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import type { Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Provider = "google" | "github" | "discord";
 
@@ -22,16 +22,21 @@ export function useAuth(
 ): Auth {
   const { data: session, status } = useSession();
   const { push } = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (protectedRoute && status === "unauthenticated") {
       handleSignIn().catch(console.error);
     }
 
-    if (protectedRoute && status === "authenticated" && isAllowed && !isAllowed(session)) {
+    if (isMounted && protectedRoute && status === "authenticated" && isAllowed && !isAllowed(session)) {
       void push("/404").catch(console.error);
     }
-  }, [protectedRoute, isAllowed, status, session, push]);
+  }, [isMounted, protectedRoute, isAllowed, status, session, push]);
 
   const handleSignIn = async () => {
     await signIn();

@@ -10,8 +10,10 @@ const welcome = () => {
   const router = useRouter();
   const controls = useAnimation();
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     controls.start({
       scale: 1,
       y: 0,
@@ -30,9 +32,11 @@ const welcome = () => {
 
   const handleButtonClick = () => {
     setButtonClicked(true);
-    setInterval(() => {
+    setTimeout(() => {
       // Wait 1 second and redirect
-      router.push("/").catch(console.error);
+      if (isMounted) {
+        router.push("/").catch(console.error);
+      }
     }, 1000);
   };
 

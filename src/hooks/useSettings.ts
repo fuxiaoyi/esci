@@ -21,25 +21,29 @@ export function useSettings(): SettingsModel {
   const updateSettings = useModelSettingsStore.use.updateSettings();
   const router = useRouter();
   const { i18n } = useTranslation();
+  const [isMounted, setIsMounted] = useState(false);
 
   // The server doesn't have access to local storage so rendering Zustand directly  will lead to a hydration error
   useEffect(() => {
+    setIsMounted(true);
     set_ModelSettings(modelSettings);
   }, [modelSettings]);
 
   // We must handle language setting changes uniquely as the router must be the source of truth for the language
   useEffect(() => {
-    if (router.locale !== modelSettings.language.code) {
+    if (isMounted && router.locale !== modelSettings.language.code) {
       updateSettings("language", findLanguage(router.locale || "en"));
     }
-  }, [router, modelSettings.language, updateSettings]);
+  }, [isMounted, router, modelSettings.language, updateSettings]);
 
   const updateLangauge = async (language: Language): Promise<void> => {
     await i18n.changeLanguage(language.code);
-    const { pathname, asPath, query } = router;
-    await router.push({ pathname, query }, asPath, {
-      locale: language.code,
-    });
+    if (isMounted) {
+      const { pathname, asPath, query } = router;
+      await router.push({ pathname, query }, asPath, {
+        locale: language.code,
+      });
+    }
   };
 
   return {
