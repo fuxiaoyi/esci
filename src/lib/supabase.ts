@@ -1,11 +1,77 @@
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server'
 
-// Initialize the Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+import { clientEnv } from '../env/schema.mjs'
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase URL or Anon Key is missing. Please check your environment variables.');
+// Client-side Supabase client
+export const supabase = createClient(
+  clientEnv.NEXT_PUBLIC_SUPABASE_URL,
+  clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
+
+// Server-side Supabase client for API routes (only for app directory)
+// This function should only be used in Server Components (app directory)
+export const createServerSupabaseClient = () => {
+  // This function requires next/headers which is only available in app directory
+  // For pages directory, use the regular supabase client or implement differently
+  throw new Error('createServerSupabaseClient is only available in app directory. Use the regular supabase client instead.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey); 
+// Middleware helper for Supabase
+export const createMiddlewareSupabaseClient = (req: NextRequest) => {
+  let response = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  })
+
+  const supabase = createServerClient(
+    clientEnv.NEXT_PUBLIC_SUPABASE_URL,
+    clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name: string) {
+          return req.cookies.get(name)?.value
+        },
+        set(name: string, value: string, options: any) {
+          req.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+        },
+        remove(name: string, options: any) {
+          req.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+        },
+      },
+    }
+  )
+
+  return { supabase, response }
+}

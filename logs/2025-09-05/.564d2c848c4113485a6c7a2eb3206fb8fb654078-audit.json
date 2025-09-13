@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/kongfoo/src/e-copi/next/logs/2025-09-05/.564d2c848c4113485a6c7a2eb3206fb8fb654078-audit.json",
+    "files": [
+        {
+            "date": 1757056057359,
+            "name": "/Users/kongfoo/src/e-copi/next/logs/2025-09-05/2025-09-05-warn.log",
+            "hash": "a70c9408444ae256f6ceeffdc4b6726c85fa814daf49279d7c3e4bf30a347301"
+        },
+        {
+            "date": 1757089226881,
+            "name": "/Users/kongfoo/src/e-copi/next/logs/2025-09-05/2025-09-06-warn.log",
+            "hash": "cca97eb9e0e8f521b59100050da29fb6858c12bb681f714dd17e7717f8e62443"
+        }
+    ],
+    "hashType": "sha256"
+}

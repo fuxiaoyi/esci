@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/kongfoo/src/esci/logs/2025-09-13/.d6dcb339c4fac09bc8d8a63d4e4f0e50a17e4306-audit.json",
+    "files": [
+        {
+            "date": 1757793481366,
+            "name": "/Users/kongfoo/src/esci/logs/2025-09-13/2025-09-14-error.log",
+            "hash": "a1911423e23200a709cb1a8db38794f8d9d1333bf85ff2a8ce4acbaf44105c71"
+        }
+    ],
+    "hashType": "sha256"
+}

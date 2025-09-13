@@ -1,0 +1,106 @@
+- Part: BBa_K2206006
+  href: https://parts.igem.org/Part:BBa_K2206006
+  Description: |
+    <p className="text-sm">
+        This part is a composite of a T7 promoter, a ribosome binding site (RBS), and the coding sequence for GFP (Green Fluorescent Protein). It is designed for protein expression in E. coli strains that express T7 RNA polymerase.
+      </p>
+      <ul className="list-disc list-inside mt-2 text-sm">
+        <li><strong>T7 Promoter:</strong> A strong promoter for high-level expression.</li>
+        <li><strong>RBS:</strong> Enables efficient translation initiation.</li>
+        <li><strong>GFP:</strong> A reporter protein that fluoresces green, allowing for easy visualization of expression.</li>
+      </ul>
+      <p className="mt-2 text-sm">
+        This part is commonly used to test the functionality of expression systems and to quantify the strength of other genetic elements.
+      </p>
+- Part: BBa_K2116002
+  href: https://parts.igem.org/Part:BBa_K2116002
+  Description: |
+    <p className="text-sm">
+      This part contains the <strong>norV promoter (PnorV)</strong> from <i>E. coli</i> K12 TOP10, designed as a nitric oxide (NOx) detector. In the presence of NOx, PnorV activates downstream gene expression, enabling protein production in response to environmental NOx.
+    </p>
+    <ul className="list-disc list-inside mt-2 text-sm">
+      <li><strong>NOx Detection:</strong> Senses nitric oxide via the native norV promoter, regulated by NorR.</li>
+      <li><strong>Biological Context:</strong> PnorV controls the nitric oxide reduction operon (norRVW) in <i>E. coli</i>. NorR binds NO and activates gene expression.</li>
+      <li><strong>Characterization:</strong> PnorV was cloned upstream of superfolder GFP and tested in <i>E. coli</i> using DETA/NO as an NO source. Activation requires native NorR, as shown by loss of response in a norR knockout strain.</li>
+      <li><strong>Applications:</strong> Useful for constructing biosensors to detect and quantify NOx in bacterial systems.</li>
+    </ul>
+    <p className="mt-2 text-sm">
+      This part is valuable for synthetic biology applications requiring sensitive detection of nitric oxide, and has been characterized using both plate reader and flow cytometry assays to assess dose response and expression noise.
+    </p> 
+- Part: BBa_K4387000
+  href: https://parts.igem.org/Part:BBa_K4387000
+  Description: |
+    <p className="text-sm">
+      This part contains the <strong>pNorVβ promoter</strong>, an optimized nitric oxide sensitive promoter regulated by NorR. The corresponding integration host factor IHF2 binding site was removed from the promoter pNorV to exhibit good sensitivity and dosage response at a low range of inducer DETA/NO, activating downstream genes' transcription.
+    </p>
+    <ul className="list-disc list-inside mt-2 text-sm">
+      <li><strong>Optimized Design:</strong> IHF2 binding site removal improves sensitivity and dose response to low DETA/NO concentrations.</li>
+      <li><strong>Feedback Loop:</strong> Designed to couple with transcriptional regulator NorR (BBa_K4387001) creating a feedback loop to finetune NorR amount to free NO molecules.</li>
+      <li><strong>Improved Version:</strong> Enhanced version of the 2016 ETH iGEM team pNorV promoter with better performance characteristics.</li>
+      <li><strong>Tested Strain:</strong> Characterized in <i>E. coli</i> Nissle 1917 bacterial strain.</li>
+      <li><strong>Characterization Methods:</strong> Time-lapse plate reader assays for dynamic sensitivity measurement and endpoint flow cytometry for single-cell scale behavior analysis.</li>
+    </ul>
+    <p className="mt-2 text-sm">
+      This promoter was extensively characterized using both population-level kinetic analysis and single-cell expression noise measurements, making it valuable for synthetic biology applications requiring precise nitric oxide sensing and response.
+    </p> 
+- Part: BBa_K863005
+  href: https://parts.igem.org/Part:BBa_K863005
+  Description: |
+    <p className="text-sm">
+      This part contains the <strong>E. coli laccase ORF</strong> with T7 promoter, RBS, and His-tag, designed for high-level expression of laccase enzymes in <i>E. coli</i>. Laccases are copper-containing polyphenol oxidase enzymes (EC 1.10.3.2) that can oxidize a broad range of substrates through copper-mediated reactions.
+    </p>
+    <ul className="list-disc list-inside mt-2 text-sm">
+      <li><strong>T7 Promoter:</strong> Strong promoter for high-level protein expression in T7 RNA polymerase-expressing strains.</li>
+      <li><strong>RBS:</strong> Ribosome binding site for efficient translation initiation.</li>
+      <li><strong>His-tag:</strong> 6x histidine tag for protein purification and detection.</li>
+      <li><strong>Laccase Function:</strong> Copper-containing enzyme that oxidizes phenolic and nonphenolic compounds, reducing oxygen to water.</li>
+      <li><strong>Copper Cluster:</strong> Contains four-copper-ion-cluster (one blue copper-ion type 1, one type 2, and two type 3) essential for radical oxidation.</li>
+    </ul>
+    <p className="mt-2 text-sm">
+      <strong>Applications:</strong> This part is valuable for bioremediation, industrial effluent detoxification (paper/pulp, textile, petrochemical), medical diagnostics, herbicide/pesticide cleanup, anti-cancer drug synthesis, and cosmetic applications. The enzyme's ability to remove xenobiotic substances and produce polymeric products makes it useful for water purification systems.
+    </p>
+    <p className="mt-2 text-sm">
+      <strong>Safety Assessment:</strong> Allergenicity testing by Baltimore Biocrew 2017 showed 27.1% identity and 54.3% similarity to top allergens, indicating this part is NOT of potential allergen status. No 80-amino acid window matches exceeded 35% similarity threshold.
+    </p> 
+- Part: BBa_K2306008
+  href: https://parts.igem.org/Part:BBa_K2306008
+  Description: |
+    <p className="text-sm">
+      This part contains the <strong>Secretory-abundant heat soluble protein 33020 "SAHS 33020"</strong> with T7 promoter, RBS and double terminator, designed by Guillermo Serena Ruiz from iGEM17_TUDelft (2017-10-04). This composite BioBrick features the basic part BBa_k2306003 that codes for the production of the tardigrade intrinsically disordered protein (TDP) "SAHS 33020".
+    </p>
+    <ul className="list-disc list-inside mt-2 text-sm">
+      <li><strong>T7 Promoter:</strong> BBa_I712074 for inducible overexpression with IPTG.</li>
+      <li><strong>RBS:</strong> BBa_K2306014 for efficient translation initiation.</li>
+      <li><strong>SAHS 33020:</strong> One of several heat soluble proteins found in tardigrades capable of protecting other fragile biological parts upon desiccation by generating a crystal matrix.</li>
+      <li><strong>Double Terminator:</strong> Consisting of a rrnB T1 terminator and T7Te terminator BBa_B0015.</li>
+    </ul>
+    <p className="mt-2 text-sm">
+      <strong>Function:</strong> This tardigrade protein can be combined with other perishable biological material (e.g., proteins) to increase its stability after dehydration or even enable the possibility of stabilizing material with just a previous drying step. The protein generates a glass-like matrix that substitutes water and protects cellular components, which redissolves upon rehydration, leaving behind undamaged functional cells.
+    </p>
+    <p className="mt-2 text-sm">
+      <strong>Background:</strong> Tardigrade-specific intrinsically disordered proteins (TDPs) are found in tardigrades, microscopic animals known for surviving in harsh conditions including space. The SAHS (Secretory Abundant Heat Soluble) proteins are produced upon hydric stress or desiccation and were discovered by Boothby et al. (2017) to be responsible for the unmatched resilience of tardigrades towards desiccation.
+    </p>
+    <p className="mt-2 text-sm">
+      <strong>Applications:</strong> This part was employed in TU Delft's project for the expression and production of SAHS 33020, and is valuable for synthetic biology applications requiring protein stabilization during desiccation processes.
+    </p> 
+- Part: BBa_K404122
+  href: https://parts.igem.org/Part:BBa_K404122
+  Description: |
+    <p className="text-sm">
+      This part contains the <strong>Virus Construction Kit</strong> for suicide gene therapy, designed by the iGEM team Freiburg_Bioware 2010. This system enables targeted delivery of suicide genes to tumor cells using viral vectors, specifically adeno-associated viruses (AAV), for cancer treatment applications.
+    </p>
+    <ul className="list-disc list-inside mt-2 text-sm">
+      <li><strong>Suicide Gene Components:</strong> Includes cytosine deaminase (CD, BBa_K404112) and improved guanylate kinase - thymidine kinase fusion gene (mGMK_TK, BBa_K404113).</li>
+      <li><strong>Viral Delivery:</strong> Uses AAV vectors with inverted terminal repeats (ITRs) for efficient encapsulation and delivery of suicide genes to target cells.</li>
+      <li><strong>Prodrug Systems:</strong> Compatible with established prodrug/enzyme combinations including 5-fluorocytosine/cytosine deaminase (CD) and ganciclovir (GCV)/herpes simplex virus thymidine kinase (HSV-TK).</li>
+      <li><strong>Tumor Targeting:</strong> Specifically designed for targeting tumor cells with minimal off-target effects.</li>
+    </ul>
+    <p className="mt-2 text-sm">
+      <strong>Function:</strong> The suicide genes are delivered to target cells where their expression is mediated by cellular proteins. Upon activation by prodrugs, these genes produce cytotoxic effects that lead to targeted cell death, making it an effective approach for cancer therapy.
+    </p>
+    <p className="mt-2 text-sm">
+      <strong>Characterization:</strong> The system has been validated through enzymatic cytotoxicity assays, flow cytometry, and phase contrast microscopy. Testing was performed using HT1080 cancer cell lines transduced with directed viral particles containing the suicide genes packaged into viral capsids.
+    </p>
+    <p className="mt-2 text-sm">
+      <strong>Applications:</strong> This part is valuable for synthetic biology applications in cancer research and therapy, particularly for developing targeted treatment approaches that minimize damage to healthy tissues while effectively eliminating tumor cells.
+    </p> 

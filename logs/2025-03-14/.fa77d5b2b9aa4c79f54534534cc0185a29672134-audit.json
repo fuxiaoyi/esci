@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/kongfoo/src/e-copi/next/logs/2025-03-14/.fa77d5b2b9aa4c79f54534534cc0185a29672134-audit.json",
+    "files": [
+        {
+            "date": 1741953007754,
+            "name": "/Users/kongfoo/src/e-copi/next/logs/2025-03-14/2025-03-14-debug.log",
+            "hash": "9ef2053b528f005944ec8c9e5eb6a8786725cc643ebc49f31b7cd1467aae2bed"
+        }
+    ],
+    "hashType": "sha256"
+}
