@@ -52,6 +52,29 @@ const Home: NextPage = () => {
   const [showSignInDialog, setShowSignInDialog] = React.useState(false);
   const agentUtils = useAgent();
 
+  // Move all hooks to the top before any conditional returns
+  const goalInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    goalInputRef?.current?.focus();
+  }, []);
+
+  const getAgentDataFromLocalStorage = () => {
+    const agentData = localStorage.getItem("agentData");
+    return agentData ? (JSON.parse(agentData) as { name: string; goal: string }) : null;
+  };
+
+  useEffect(() => {
+    if (session !== null) {
+      const agentData = getAgentDataFromLocalStorage();
+
+      if (agentData) {
+        setNameInput(agentData.name);
+        setGoalInput(agentData.goal);
+        localStorage.removeItem("agentData");
+      }
+    }
+  }, [session, setGoalInput, setNameInput]);
+
   // Show marketing page if user is not authenticated
   if (status === "unauthenticated") {
     return <MarketingLanding />;
@@ -65,11 +88,6 @@ const Home: NextPage = () => {
       </div>
     );
   }
-
-  const goalInputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    goalInputRef?.current?.focus();
-  }, []);
 
   const setAgentRun = (newName: string, newGoal: string) => {
     setNameInput(newName);
@@ -121,23 +139,6 @@ const Home: NextPage = () => {
     const agentData = { name, goal };
     localStorage.setItem("agentData", JSON.stringify(agentData));
   };
-
-  const getAgentDataFromLocalStorage = () => {
-    const agentData = localStorage.getItem("agentData");
-    return agentData ? (JSON.parse(agentData) as { name: string; goal: string }) : null;
-  };
-
-  useEffect(() => {
-    if (session !== null) {
-      const agentData = getAgentDataFromLocalStorage();
-
-      if (agentData) {
-        setNameInput(agentData.name);
-        setGoalInput(agentData.goal);
-        localStorage.removeItem("agentData");
-      }
-    }
-  }, [session, setGoalInput, setNameInput]);
 
   const handleRestart = () => {
     resetAllMessageSlices();
