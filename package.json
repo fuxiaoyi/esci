@@ -11,7 +11,7 @@
     "postinstall": "prisma generate",
     "lint": "cross-env SKIP_ENV_VALIDATION=1 next lint --fix",
     "start": "next start",
-    "prepare": "cd .. && husky install next/.husky",
+    "prepare": "husky install",
     "test": "cross-env SKIP_ENV_VALIDATION=1 jest"
   },
   "dependencies": {
