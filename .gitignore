@@ -21,6 +21,7 @@ next-env.d.ts
 # production
 /build
 /logs
+/local
 *.log
 
 # misc
