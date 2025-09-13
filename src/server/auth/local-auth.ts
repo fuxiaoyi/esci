@@ -63,16 +63,29 @@ export const options = (
           if (!inviteCode) {
             try {
               // 使用 Supabase 进行邮箱密码登录
-              const { data, error } = await supabaseAuth.signInWithEmail(email, password);
+              const { user: supabaseUser, session } = await supabaseAuth.signInWithEmail(email, password);
               
-              if (error) {
-                throw new Error(error.message);
+              if (!supabaseUser) {
+                throw new Error("登录失败");
               }
 
               // 根据邮箱查询用户
-              const user = await adapter.getUserByEmail(email);
+              let user = await adapter.getUserByEmail(email);
               if (!user) {
-                throw new Error("用户不存在");
+                // 如果用户不存在，创建一个新用户
+                try {
+                  user = await adapter.createUser({
+                    email: email,
+                    name: supabaseUser.user_metadata?.name || email,
+                    image: supabaseUser.user_metadata?.avatar_url,
+                    superAdmin: false,
+                    emailVerified: new Date(),
+                    organizations: [],
+                  });
+                } catch (createError) {
+                  console.error("Error creating user:", createError);
+                  throw new Error("用户创建失败");
+                }
               }
 
               logger.info("用户登录", user);
@@ -118,10 +131,10 @@ export const options = (
 
           try {
             // 使用 Supabase 进行邮箱注册
-            const { data, error } = await supabaseAuth.signUpWithEmail(email, password, { name });
+            const { user: supabaseUser, session } = await supabaseAuth.signUpWithEmail(email, password, { name });
             
-            if (error) {
-              throw new Error(error.message);
+            if (!supabaseUser) {
+              throw new Error("注册失败");
             }
 
             // 先往数据库添加用户
@@ -172,7 +185,6 @@ export const options = (
 
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           setCookie("next-auth.session-token", session.sessionToken, {
-            expires: session.expires,
             req: req,
             res: res,
           });

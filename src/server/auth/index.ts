@@ -33,27 +33,38 @@ const commonOptions: Partial<AuthOptions> & { adapter: Adapter } = {
   adapter: prismaAdapter,
   callbacks: {
     async session({ session, user }) {
-      const [token, orgs] = await Promise.all([
-        prisma.session.findFirstOrThrow({
-          where: { userId: user.id },
-          orderBy: { expires: "desc" },
-        }),
-        prisma.organizationUser.findMany({
-          where: { user_id: user.id },
-          include: { organization: true },
-        }),
-      ]);
+      try {
+        const [token, orgs] = await Promise.all([
+          prisma.session.findFirst({
+            where: { userId: user.id },
+            orderBy: { expires: "desc" },
+          }),
+          prisma.organizationUser.findMany({
+            where: { user_id: user.id },
+            include: { organization: true },
+          }),
+        ]);
 
-      session.accessToken = token.sessionToken;
-      session.user.id = user.id;
-      session.user.superAdmin = user.superAdmin;
-      session.user.organizations = orgs.map((row) => ({
-        id: row.organization.id,
-        name: row.organization.name,
-        role: row.role,
-      }));
+        if (token) {
+          session.accessToken = token.sessionToken;
+        }
+        session.user.id = user.id;
+        session.user.superAdmin = user.superAdmin;
+        session.user.organizations = orgs.map((row) => ({
+          id: row.organization.id,
+          name: row.organization.name,
+          role: row.role,
+        }));
 
-      return session;
+        return session;
+      } catch (error) {
+        console.error("Session callback error:", error);
+        // Return a basic session if there's an error
+        session.user.id = user.id;
+        session.user.superAdmin = user.superAdmin;
+        session.user.organizations = [];
+        return session;
+      }
     },
   },
 };
