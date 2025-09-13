@@ -1,8 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Analytics } from "@vercel/analytics/react";
 
 const MarketingLanding = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Smooth scroll to element when URL hash changes
   useEffect(() => {
     const handleHashChange = () => {
@@ -25,16 +31,16 @@ const MarketingLanding = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header isMounted={isMounted} />
       
       <main>
         <Analytics />
         
-        <IntroSection />
+        <IntroSection isMounted={isMounted} />
         
         <FeaturesSection />
         
-        <DialogueSection />
+        <DialogueSection isMounted={isMounted} />
         
         <AboutSection />
       </main>
@@ -44,15 +50,19 @@ const MarketingLanding = () => {
   );
 };
 
-const Header = () => {
+const Header = ({ isMounted }: { isMounted: boolean }) => {
   const router = useRouter();
 
   const handleSignIn = () => {
-    router.push('/signin');
+    if (isMounted) {
+      router.push('/signin');
+    }
   };
 
   const handleGetStarted = () => {
-    router.push('/signin');
+    if (isMounted) {
+      router.push('/signin');
+    }
   };
 
   return (
@@ -95,15 +105,19 @@ const Header = () => {
   );
 };
 
-const IntroSection = () => {
+const IntroSection = ({ isMounted }: { isMounted: boolean }) => {
   const router = useRouter();
 
   const handleStartDesigning = () => {
-    router.push('/signin');
+    if (isMounted) {
+      router.push('/signin');
+    }
   };
 
   const handleWatchDemo = () => {
-    router.push('/signin');
+    if (isMounted) {
+      router.push('/signin');
+    }
   };
 
   return (
@@ -248,11 +262,13 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; titl
   );
 };
 
-const DialogueSection = () => {
+const DialogueSection = ({ isMounted }: { isMounted: boolean }) => {
   const router = useRouter();
 
   const handleSignInToDemo = () => {
-    router.push('/signin');
+    if (isMounted) {
+      router.push('/signin');
+    }
   };
 
   return (
