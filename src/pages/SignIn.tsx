@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
 import type { BuiltInProviderType } from "next-auth/providers";
 import type { ClientSafeProvider } from "next-auth/react";
-import { getProviders, signIn, useSession } from "next-auth/react";
+import { getProviders, signIn, useSession, getSession } from "next-auth/react";
 import type { LiteralUnion } from "next-auth/react/types";
 import React, { useState } from "react";
 import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
@@ -120,7 +120,10 @@ const SupabaseSignin = () => {
         throw new Error(result.error);
       } else if (result?.ok) {
         void message.success("Login successful");
-        router.push("/");
+        // Refresh the session to ensure NextAuth picks up the new authentication
+        await getSession();
+        // Use router.replace to avoid adding to history stack
+        router.replace("/");
       } else {
         throw new Error("Login failed. Please try again.");
       }

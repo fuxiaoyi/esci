@@ -8,6 +8,7 @@ import { serverEnv } from "../../env/schema.mjs";
 import { supabaseAuth } from "../../lib/supabase-auth";
 
 export const authOptions: NextAuthOptions = {
+  secret: serverEnv.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: serverEnv.GOOGLE_CLIENT_ID ?? "",
