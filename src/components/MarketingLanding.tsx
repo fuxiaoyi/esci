@@ -55,13 +55,13 @@ const Header = ({ isMounted }: { isMounted: boolean }) => {
 
   const handleSignIn = () => {
     if (isMounted) {
-      router.push('/signin');
+      void router.push('/signin');
     }
   };
 
   const handleGetStarted = () => {
     if (isMounted) {
-      router.push('/signin');
+      void router.push('/signin');
     }
   };
 
@@ -110,13 +110,13 @@ const IntroSection = ({ isMounted }: { isMounted: boolean }) => {
 
   const handleStartDesigning = () => {
     if (isMounted) {
-      router.push('/signin');
+      void router.push('/signin');
     }
   };
 
   const handleWatchDemo = () => {
     if (isMounted) {
-      router.push('/signin');
+      void router.push('/signin');
     }
   };
 
@@ -162,7 +162,7 @@ const FeaturesSection = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Product Overview</h2>
           <p className="text-neutral-600 max-w-4xl mx-auto">
-            An integrated hardware and software solution of generative AI models for enzyme design. It is made possible with the latest Nvidia GB10 chips which provides computation power comparable to the last generation's datacenter. We optimize the model inference by CUDA programming to leverage a new AI methodology named 'test-time scaling' which could avoid the costly fine-tuning or training which is required by existing alternative solution.
+            An integrated hardware and software solution of generative AI models for enzyme design. It is made possible with the latest Nvidia GB10 chips which provides computation power comparable to the last generation&apos;s datacenter. We optimize the model inference by CUDA programming to leverage a new AI methodology named &apos;test-time scaling&apos; which could avoid the costly fine-tuning or training which is required by existing alternative solution.
           </p>
         </div>
         
@@ -267,7 +267,7 @@ const DialogueSection = ({ isMounted }: { isMounted: boolean }) => {
 
   const handleSignInToDemo = () => {
     if (isMounted) {
-      router.push('/signin');
+      void router.push('/signin');
     }
   };
 

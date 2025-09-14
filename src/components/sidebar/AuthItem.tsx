@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { useRouter } from "next/router";
 import type { Session } from "next-auth";
 import { useTranslation } from "next-i18next";
 import type { FC } from "react";
@@ -16,12 +15,8 @@ const AuthItem: FC<{
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
 }> = ({ session, classname, signOut, signIn }) => {
-  const [t] = useTranslation("drawer");
   const [showDialog, setShowDialog] = useState(false);
-  const router = useRouter();
   const user = session?.user;
-
-  const organization = user?.organizations?.at(0)?.name;
 
   return (
     <div className="flex items-center justify-between">
@@ -30,7 +25,7 @@ const AuthItem: FC<{
           "flex flex-1 cursor-pointer items-center justify-start gap-3 rounded-md px-1.5 py-2 text-sm font-semibold text-slate-12 hover:bg-slate-5",
           classname
         )}
-        onClick={(e) => {
+        onClick={() => {
           user ? setShowDialog(true) : void signIn();
         }}
       >

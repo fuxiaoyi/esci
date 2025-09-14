@@ -2,7 +2,6 @@ import Spline from "@splinetool/react-spline";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import type { FC } from "react";
 import { Suspense, useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -18,7 +17,6 @@ import FadeIn from "../motions/FadeIn";
 import PrimaryButton from "../PrimaryButton";
 
 const Hero: FC<{ className?: string }> = ({ className }) => {
-  const router = useRouter();
   const [sliderIndex, setSliderIndex] = useState(0);
   const totalCards = roles.length;
   const [showVideo, setShowVideo] = useState(false);
@@ -117,7 +115,7 @@ const Hero: FC<{ className?: string }> = ({ className }) => {
                 animate={{ x: `${sliderIndex * -308}px` }}
                 transition={{ duration: 0.5, type: "spring", stiffness: 60 }}
               >
-                {roles.map((role, index) => (
+                {roles.map((role) => (
                   <HeroCard
                     key={role.title}
                     title={role.title}

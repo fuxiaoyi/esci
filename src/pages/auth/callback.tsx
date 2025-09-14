@@ -13,18 +13,18 @@ function AuthCallback() {
       
       if (error) {
         console.error('Auth callback error:', error)
-        router.push('/signin?error=callback_error')
+        void router.push('/signin?error=callback_error')
         return
       }
 
       if (data.session) {
-        router.push('/')
+        void router.push('/')
       } else {
-        router.push('/signin')
+        void router.push('/signin')
       }
     }
 
-    handleAuthCallback()
+    void handleAuthCallback()
   }, [router])
 
   return (

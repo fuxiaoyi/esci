@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import FadeIn from "../components/motions/FadeIn";
 import PrimaryButton from "../components/PrimaryButton";
 
-const welcome = () => {
+const Welcome = () => {
   const router = useRouter();
   const controls = useAnimation();
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -76,4 +76,4 @@ const welcome = () => {
   );
 };
 
-export default welcome;
+export default Welcome;

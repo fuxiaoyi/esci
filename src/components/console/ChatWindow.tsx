@@ -1,15 +1,12 @@
 import clsx from "clsx";
-import { useTranslation } from "next-i18next";
 import type { ReactNode } from "react";
 import React, { useEffect, useRef, useState } from "react";
-import { FaArrowCircleDown, FaCommentDots } from "react-icons/fa";
+import { FaArrowCircleDown } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 
 import type { HeaderProps } from "./MacWindowHeader";
 import { MacWindowHeader, messageListId } from "./MacWindowHeader";
 import { useAgentStore } from "../../stores";
-import Button from "../Button";
-import Input from "../Input";
 import HideShow from "../motions/HideShow";
 
 interface ChatControls {
@@ -26,8 +23,7 @@ interface ChatWindowProps extends HeaderProps {
   chatControls?: ChatControls;
 }
 
-const ChatWindow = ({ messages, children, title, chatControls }: ChatWindowProps) => {
-  const [t] = useTranslation();
+const ChatWindow = ({ messages, children, title }: ChatWindowProps) => {
   const [hasUserScrolled, setHasUserScrolled] = useState(false);
   const isThinking = useAgentStore.use.isAgentThinking();
   const isStopped = useAgentStore.use.lifecycle() === "stopped";

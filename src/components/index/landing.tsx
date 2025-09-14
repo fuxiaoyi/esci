@@ -10,7 +10,6 @@ import AppTitle from "../AppTitle";
 import Button from "../Button";
 import ExampleAgents from "../console/ExampleAgents";
 import { ToolsDialog } from "../dialog/ToolsDialog";
-import Globe from "../Globe";
 import Input from "../Input";
 
 type LandingProps = {

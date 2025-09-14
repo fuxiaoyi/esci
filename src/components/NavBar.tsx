@@ -9,7 +9,6 @@ import GlowWrapper from "./GlowWrapper";
 import CycleIcons from "./motions/CycleIcons";
 import FadeIn from "./motions/FadeIn";
 import PrimaryButton from "./PrimaryButton";
-import TextButton from "./TextButton";
 import BlogsIcon from "../../public/icons/icon-blogs.svg";
 import DocsIcon from "../../public/icons/icon-docs.svg";
 import GithubIcon from "../../public/icons/icon-github.svg";

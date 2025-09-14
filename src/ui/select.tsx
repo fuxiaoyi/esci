@@ -7,7 +7,7 @@ import { HiOutlineChevronUpDown } from "react-icons/hi2";
 
 interface Props<T> {
   value?: T;
-  onChange?: (value: T | undefined) => void | Promise<void>;
+  onChange?: (value: T | undefined) => void;
   items?: T[];
   valueMapper?: (item?: T) => string | undefined;
   icon: IconType;

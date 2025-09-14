@@ -23,7 +23,7 @@ const Button = forwardRef((props: ButtonProps, ref: ForwardedRef<HTMLButtonEleme
 
     try {
       void Promise.resolve(props.onClick?.(e)).then();
-    } catch (e) {
+    } catch {
       setLoading(false);
     }
   };

@@ -11,13 +11,12 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   loader?: boolean;
   disabled?: boolean;
   ping?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void> | void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = forwardRef((props: ButtonProps, ref: ForwardedRef<HTMLButtonElement>) => {
   const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    void Promise.resolve(props.onClick?.(e)).then();
-    e.preventDefault();
+    props.onClick?.(e);
   };
 
   return (

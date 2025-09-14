@@ -68,7 +68,18 @@ export class SupabaseDatabaseService {
 
     if (error || !data.user) return null
 
-    const user = data.user
+    const user = data.user as {
+      id: string;
+      email?: string;
+      user_metadata?: {
+        name?: string;
+        avatar_url?: string;
+        super_admin?: boolean;
+        invite_code?: string;
+      };
+      email_confirmed_at?: string;
+      created_at: string;
+    }
     return {
       id: user.id,
       email: user.email || '',
@@ -86,7 +97,18 @@ export class SupabaseDatabaseService {
 
     if (error || !data.user) return null
 
-    const user = data.user
+    const user = data.user as {
+      id: string;
+      email?: string;
+      user_metadata?: {
+        name?: string;
+        avatar_url?: string;
+        super_admin?: boolean;
+        invite_code?: string;
+      };
+      email_confirmed_at?: string;
+      created_at: string;
+    }
     return {
       id: user.id,
       email: user.email || '',

@@ -1,4 +1,3 @@
-import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useSettings } from "../../hooks/useSettings";
@@ -23,7 +22,6 @@ type ChatProps = {
 };
 const Chat = (props: ChatProps) => {
   const { settings } = useSettings();
-  const { t } = useTranslation("indexPage");
   const [chatInput, setChatInput] = React.useState("");
   const agent = useAgentStore.use.agent();
   const agentLifecycle = useAgentStore.use.lifecycle();

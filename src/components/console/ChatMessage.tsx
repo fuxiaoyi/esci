@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FiClipboard } from "react-icons/fi";
@@ -19,7 +18,6 @@ import Button from "../../ui/button";
 import { getMessageContainerStyle, getTaskStatusIcon } from "../utils/helpers";
 
 const ChatMessage = ({ message }: { message: Message }) => {
-  const [t] = useTranslation();
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = () => {

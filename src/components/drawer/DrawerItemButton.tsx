@@ -4,7 +4,7 @@ import React from "react";
 interface DrawerItemProps {
   text: string;
   className?: string;
-  onClick?: () => Promise<void> | void;
+  onClick?: () => void;
 }
 
 export const DrawerItemButton = (props: DrawerItemProps) => {
