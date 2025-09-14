@@ -134,7 +134,7 @@ const SettingsPage = () => {
                 value={settings.language}
                 valueMapper={(e) => e.name}
                 onChange={(e) => {
-                  void updateLangauge(e).catch(console.error);
+                  updateLangauge(e);
                 }}
                 items={languages}
                 icon={<FaGlobe />}

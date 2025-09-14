@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { useModelSettingsStore } from "../stores";
 import type { ModelSettings } from "../types";
@@ -12,7 +12,7 @@ import { findLanguage } from "../utils/languages";
 export type SettingsModel = {
   settings: ModelSettings;
   updateSettings: <Key extends keyof ModelSettings>(key: Key, value: ModelSettings[Key]) => void;
-  updateLangauge: (language: Language) => Promise<void>;
+  updateLangauge: (language: Language) => void;
 };
 
 export function useSettings(): SettingsModel {
@@ -22,6 +22,7 @@ export function useSettings(): SettingsModel {
   const router = useRouter();
   const { i18n } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
+  const languageChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // The server doesn't have access to local storage so rendering Zustand directly  will lead to a hydration error
   useEffect(() => {
@@ -36,22 +37,64 @@ export function useSettings(): SettingsModel {
     }
   }, [isMounted, router, modelSettings.language, updateSettings]);
 
-  const updateLangauge = async (language: Language): Promise<void> => {
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (languageChangeTimeoutRef.current) {
+        clearTimeout(languageChangeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const updateLangauge = (language: Language): void => {
     // Only proceed if the language is actually different
     if (router.locale === language.code) {
       return;
     }
     
-    // Update the i18n language first
-    await i18n.changeLanguage(language.code);
-    
-    if (isMounted) {
-      const { pathname, asPath, query } = router;
-      // Use push instead of replace to avoid hard navigation issues
-      await router.push({ pathname, query }, asPath, {
-        locale: language.code,
-      });
+    // Prevent multiple simultaneous language changes
+    if (router.isReady === false) {
+      return;
     }
+    
+    // Clear any pending language change
+    if (languageChangeTimeoutRef.current) {
+      clearTimeout(languageChangeTimeoutRef.current);
+    }
+    
+    // Debounce language changes to prevent rapid successive calls
+    languageChangeTimeoutRef.current = setTimeout(() => {
+      const performLanguageChange = async () => {
+        try {
+          // Update the i18n language first
+          await i18n.changeLanguage(language.code);
+          
+          if (isMounted && router.isReady) {
+            const { pathname, asPath, query } = router;
+            
+            // Check if we're already on the target locale to prevent hard navigation error
+            const currentUrl = router.asPath;
+            const targetUrl = `/${language.code}${currentUrl === '/' ? '' : currentUrl}`;
+            
+            // Only navigate if the URL would actually change
+            if (currentUrl !== targetUrl) {
+              // Use replace instead of push to avoid adding to history stack
+              await router.replace({ pathname, query }, asPath, {
+                locale: language.code,
+                shallow: true, // Use shallow routing to prevent full page reload
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error changing language:', error);
+          // Revert i18n language change on error
+          await i18n.changeLanguage(router.locale || 'en');
+        }
+      };
+      
+      // Execute the async function without awaiting it
+      void performLanguageChange();
+    }, 100); // 100ms debounce
   };
 
   return {
