@@ -1,4 +1,3 @@
-import type { Agent } from "@prisma/client";
 import type { Session } from "next-auth";
 
 import type { Analysis } from "./analysis";
@@ -7,6 +6,15 @@ import { useAgentStore } from "../../stores";
 import type { Message } from "../../types/message";
 import type { RequestBody } from "../../utils/interfaces";
 import * as apiUtils from "../api-utils";
+
+type Agent = {
+  id: string;
+  userId: string;
+  name: string;
+  goal: string;
+  deleteDate?: Date;
+  createDate: Date;
+};
 
 type ApiProps = Pick<RequestBody, "model_settings" | "goal"> & {
   session?: Session;
@@ -50,8 +58,8 @@ export class AgentApi {
   async getInitialTasks(): Promise<string[]> {
     const { model_settings, goal } = this.props;
     
-    if (!model_settings.custom_api_key) {
-      throw new Error("DeepSeek API key is required");
+    if (!model_settings.custom_api_key || !model_settings.custom_api_key.trim()) {
+      throw new Error("DeepSeek API key is required. Please provide a valid API key in the settings.");
     }
 
     const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
@@ -78,7 +86,20 @@ export class AgentApi {
     });
 
     if (!response.ok) {
-      throw new Error(`DeepSeek API error: ${response.statusText}`);
+      let errorMessage = `DeepSeek API error: ${response.statusText}`;
+      
+      try {
+        const errorData = await response.json();
+        if (errorData.error?.message) {
+          errorMessage = `DeepSeek API error: ${errorData.error.message}`;
+        } else if (errorData.error?.type) {
+          errorMessage = `DeepSeek API error: ${errorData.error.type}`;
+        }
+      } catch {
+        // If we can't parse the error response, use the status text
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
@@ -120,8 +141,8 @@ export class AgentApi {
   async analyzeTask(task: string): Promise<Analysis> {
     const { model_settings, goal } = this.props;
     
-    if (!model_settings.custom_api_key) {
-      throw new Error("DeepSeek API key is required");
+    if (!model_settings.custom_api_key || !model_settings.custom_api_key.trim()) {
+      throw new Error("DeepSeek API key is required. Please provide a valid API key in the settings.");
     }
 
     const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
@@ -157,7 +178,20 @@ export class AgentApi {
     });
 
     if (!response.ok) {
-      throw new Error(`DeepSeek API error: ${response.statusText}`);
+      let errorMessage = `DeepSeek API error: ${response.statusText}`;
+      
+      try {
+        const errorData = await response.json();
+        if (errorData.error?.message) {
+          errorMessage = `DeepSeek API error: ${errorData.error.message}`;
+        } else if (errorData.error?.type) {
+          errorMessage = `DeepSeek API error: ${errorData.error.type}`;
+        }
+      } catch {
+        // If we can't parse the error response, use the status text
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();

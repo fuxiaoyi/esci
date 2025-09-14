@@ -1,7 +1,6 @@
-import type { Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { prisma } from "../../../server/db";
+import { supabaseDb } from "../../../lib/supabase-db";
 import R from "../../../utils/r";
 
 type ReqBody = {
@@ -21,48 +20,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     pageSize = 10;
   }
 
+  try {
+    const result = await supabaseDb.getInvitations(pageNum, pageSize, status);
 
-  // 构建 where 条件
-  const where: Prisma.InvitationWhereInput = {};
-  if (status) {
-    where.status = status;
-  }
+    // Format the list to match the expected response format
+    const formattedList = result.list.map(item => ({
+      ...item,
+      createDate: item.createDate?.toLocaleString()
+    }));
 
-  const total = await prisma.invitation.count({
-    where
-  });
-  if (total < 1) {
     return res.json(
       R.success().setData({
-        list: [],
-        total: 0,
-        pageNum,
-        pageSize
+        list: formattedList,
+        total: result.total,
+        pageNum: result.pageNum,
+        pageSize: result.pageSize
       })
     );
+  } catch (error) {
+    console.error("Error fetching invitations:", error);
+    return res.status(500).json(
+      R.error("Failed to fetch invitations")
+    );
   }
-
-
-  const list = await prisma.invitation.findMany({
-    skip: (pageNum - 1) * pageSize,
-    take: pageSize,
-    where,
-    orderBy: {
-      createDate: 'desc'
-    }
-  })
-
-  list.map(item => {
-    // @ts-ignore
-    item.createDate = item.createDate?.toLocaleString();
-  })
-
-  return res.json(
-    R.success().setData({
-      list,
-      total,
-      pageNum,
-      pageSize
-    })
-  );
 }

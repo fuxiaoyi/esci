@@ -22,7 +22,6 @@ import { type Session } from "next-auth";
 import superjson from "superjson";
 
 import { getServerAuthSession } from "../auth";
-import { prisma } from "../db";
 
 /**
  * 2. INITIALIZATION
@@ -47,7 +46,6 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    prisma,
   };
 };
 

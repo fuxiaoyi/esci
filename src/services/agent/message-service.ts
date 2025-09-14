@@ -99,6 +99,12 @@ export class MessageService {
         case 404:
           message = "ERROR_OPENAI_API_KEY_NO_GPT4";
           break;
+        case 401:
+          message = "INVALID_OPENAI_API_KEY";
+          break;
+        case 429:
+          message = "ERROR_API_KEY_QUOTA";
+          break;
         default:
           message = "ERROR_ACCESSING_OPENAI_API_KEY";
           break;

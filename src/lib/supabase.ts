@@ -4,11 +4,24 @@ import type { NextRequest} from 'next/server';
 import { NextResponse } from 'next/server'
 
 import { clientEnv } from '../env/schema.mjs'
+import { serverEnv } from '../env/schema.mjs'
 
 // Client-side Supabase client
 export const supabase = createClient(
   clientEnv.NEXT_PUBLIC_SUPABASE_URL,
   clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
+
+// Server-side Supabase client with service role key (bypasses RLS)
+export const supabaseAdmin = createClient(
+  clientEnv.NEXT_PUBLIC_SUPABASE_URL,
+  serverEnv.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
 )
 
 // Server-side Supabase client for API routes (only for app directory)

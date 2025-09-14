@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
 import { env } from "../../../env/server.mjs";
-import { prisma } from "../../../server/db";
+import { supabaseDb } from "../../../lib/supabase-db";
 
 // Initialize Stripe with your secret key
 const stripe = new Stripe(env.STRIPE_SECRET_KEY || "", {
@@ -41,13 +41,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (inviteCode && email) {
       try {
-        // Update the invitation status to ready
-        await prisma.invitation.update({
-          where: { code: inviteCode },
-          data: { status: "ready" },
-        });
-
-        console.log(`Payment successful for invitation: ${inviteCode}`);
+        // Get the invitation by code
+        const invitation = await supabaseDb.getInvitationByCode(inviteCode);
+        if (invitation) {
+          // Update the invitation status to ready
+          await supabaseDb.updateInvitationStatus(invitation.id, "ready");
+          console.log(`Payment successful for invitation: ${inviteCode}`);
+        }
       } catch (error) {
         console.error("Error updating invitation status:", error);
       }

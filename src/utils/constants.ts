@@ -12,9 +12,9 @@ export const DEFAULT_MAX_LOOPS_CUSTOM_API_KEY = 10 as const;
 
 export const getDefaultModelSettings = (): ModelSettings => {
   return {
-    customApiKey: "sk-aaf88d1c24574bbeac1921b720ab8839",
+    customApiKey: "",
     language: ENGLISH,
-    customModelName: GPT_4,
+    customModelName: DP_R1_1B, // Use deepseek-chat as default
     customTemperature: 0.1,
     customMaxLoops: DEFAULT_MAX_LOOPS_FREE,
     maxTokens: 8096,

@@ -38,15 +38,37 @@ const SettingsPage = () => {
   const [isApiKeyValid, setIsApiKeyValid] = useState<boolean | undefined>(undefined);
 
   const validateApiKey = async () => {
+    if (!settings.customApiKey.trim()) {
+      setIsApiKeyValid(false);
+      return;
+    }
+
     try {
-      await axios.get("https://api.deepseek.com/v1/engines", {
+      // Use a simple chat completion request to validate the API key
+      const response = await axios.post("https://api.deepseek.com/v1/chat/completions", {
+        model: "deepseek-chat",
+        messages: [
+          {
+            role: "user",
+            content: "Hello"
+          }
+        ],
+        max_tokens: 1
+      }, {
         headers: {
           Authorization: `Bearer ${settings.customApiKey}`,
+          "Content-Type": "application/json",
         },
       });
 
-      setIsApiKeyValid(true);
+      // Check if the response is valid
+      if (response.data && response.data.choices && response.data.choices.length > 0) {
+        setIsApiKeyValid(true);
+      } else {
+        setIsApiKeyValid(false);
+      }
     } catch (error) {
+      console.error("API key validation error:", error);
       setIsApiKeyValid(false);
     }
   };

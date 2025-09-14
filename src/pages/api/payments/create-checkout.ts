@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 
 import { env } from "../../../env/server.mjs";
-import { prisma } from "../../../server/db";
+import { supabaseDb } from "../../../lib/supabase-db";
 
 // Initialize Stripe with your secret key
 const stripe = new Stripe(env.STRIPE_SECRET_KEY || "", {
@@ -23,9 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await supabaseDb.getUserByEmail(email);
 
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
@@ -35,12 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const inviteCode = uuidv4();
 
     // Create an invitation record in the database
-    await prisma.invitation.create({
-      data: {
-        code: inviteCode,
-        status: "pending",
-      },
-    });
+    await supabaseDb.createInvitation(inviteCode);
 
     // Create a Stripe checkout session
     const session = await stripe.checkout.sessions.create({

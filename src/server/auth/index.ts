@@ -1,84 +1,16 @@
 import type { IncomingMessage, ServerResponse } from "http";
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import merge from "lodash/merge";
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
-import type { AuthOptions, Awaitable } from "next-auth";
+import type { AuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
-import type { Adapter, AdapterUser } from "next-auth/adapters";
 
-import { authOptions as prodOptions } from "./auth";
-import { options as devOptions } from "./local-auth";
-import { env } from "../../env/server.mjs";
-import { prisma } from "../db";
+import { authOptions as supabaseAuthOptions } from "./supabase-auth";
 
-function overridePrisma<T>(fn: (user: T) => Awaitable<AdapterUser>) {
-  return async (user: T) => {
-    const newUser = await fn(user);
-
-    try {
-      // Add custom functionality here
-    } catch (e) {
-      console.error(e);
-    }
-
-    return newUser;
-  };
-}
-
-const prismaAdapter = PrismaAdapter(prisma);
-prismaAdapter.createUser = overridePrisma<Omit<AdapterUser, "id">>(prismaAdapter.createUser);
-
-const commonOptions: Partial<AuthOptions> & { adapter: Adapter } = {
-  adapter: prismaAdapter,
-  callbacks: {
-    async session({ session, user }) {
-      try {
-        const [token, orgs] = await Promise.all([
-          prisma.session.findFirst({
-            where: { userId: user.id },
-            orderBy: { expires: "desc" },
-          }),
-          prisma.organizationUser.findMany({
-            where: { user_id: user.id },
-            include: { organization: true },
-          }),
-        ]);
-
-        if (token) {
-          session.accessToken = token.sessionToken;
-        }
-        session.user.id = user.id;
-        session.user.superAdmin = user.superAdmin;
-        session.user.organizations = orgs.map((row) => ({
-          id: row.organization.id,
-          name: row.organization.name,
-          role: row.role,
-        }));
-
-        return session;
-      } catch (error) {
-        console.error("Session callback error:", error);
-        // Return a basic session if there's an error
-        session.user.id = user.id;
-        session.user.superAdmin = user.superAdmin;
-        session.user.organizations = [];
-        return session;
-      }
-    },
-  },
-};
 export const authOptions = (
   req: NextApiRequest | IncomingMessage,
   res: NextApiResponse | ServerResponse
-) => {
-//   const options =
-//     env.NEXT_PUBLIC_VERCEL_ENV === "development"
-//       ? devOptions(commonOptions.adapter, req, res)
-//       : prodOptions;
-  const options = devOptions(commonOptions.adapter, req, res);
-
-  return merge(commonOptions, options) as AuthOptions;
+): AuthOptions => {
+  return supabaseAuthOptions;
 };
 
 /**

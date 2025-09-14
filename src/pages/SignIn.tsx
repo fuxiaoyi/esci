@@ -14,7 +14,7 @@ import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
 import FadeIn from "../components/motions/FadeIn";
 import GridLayout from "../layout/grid";
 import { supabase } from "../lib/supabase";
-import { authOptions } from "../server/auth/auth";
+import { authOptions } from "../server/auth";
 import Input from "../ui/input";
 
 

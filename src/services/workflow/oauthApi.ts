@@ -14,7 +14,7 @@ export default class OauthApi {
   }
 
   static fromSession(session: Session | null) {
-    return new OauthApi(session?.accessToken, session?.user?.organizations[0]?.id);
+    return new OauthApi(session?.accessToken, session?.user?.organizations?.[0]?.id);
   }
 
   async install(provider: string, redirectUri?: string) {

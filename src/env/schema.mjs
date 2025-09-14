@@ -44,6 +44,9 @@ export const serverSchema = z.object({
     STRIPE_SECRET_KEY: z.string().min(1).trim().optional(),
     STRIPE_WEBHOOK_SECRET: z.string().min(1).trim().optional(),
     STRIPE_PRICE_ID: z.string().min(1).trim().optional(),
+    
+    // Supabase configuration
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).trim().optional(),
 });
 
 /**
@@ -70,6 +73,9 @@ export const serverEnv = {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
+    
+    // Supabase configuration
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 };
 
 /**
