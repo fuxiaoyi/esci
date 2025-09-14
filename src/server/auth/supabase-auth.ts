@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("邀请码已被使用");
         }
         // 判断邮箱是否已经注册过
-        let user = await supabaseDb.getUserByEmail(email);
+        const user = await supabaseDb.getUserByEmail(email);
         if (user) {
           throw new Error("邮箱已注册");
         }

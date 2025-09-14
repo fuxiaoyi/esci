@@ -2,9 +2,9 @@ import OpenAI from "openai";
 import { z } from "zod";
 
 import { env } from "../../../env/server.mjs";
+import { supabaseDb } from "../../../lib/supabase-db";
 import { messageSchema } from "../../../types/message";
 import { MESSAGE_TYPE_TASK } from "../../../types/task";
-import { supabaseDb } from "../../../lib/supabase-db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const createAgentParser = z.object({

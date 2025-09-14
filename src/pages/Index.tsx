@@ -8,6 +8,7 @@ import HelpDialog from "../components/dialog/HelpDialog.tsx";
 import { SignInDialog } from "../components/dialog/SignInDialog.tsx";
 import Chat from "../components/index/chat.tsx";
 import Landing from "../components/index/landing.tsx";
+import MarketingLanding from "../components/MarketingLanding.tsx";
 import { useAgent } from "../hooks/useAgent.ts";
 import { useAuth } from "../hooks/useAuth.ts";
 import { useSettings } from "../hooks/useSettings.ts";
@@ -16,20 +17,19 @@ import { AgentApi } from "../services/agent/agent-api.ts";
 import { DefaultAgentRunModel } from "../services/agent/agent-run-model.tsx";
 import AutonomousAgent from "../services/agent/autonomous-agent.ts";
 import { MessageService } from "../services/agent/message-service.ts";
+import { useAgentInputStore } from "../stores/agentInputStore.ts";
 import {
   resetAllAgentSlices,
   resetAllMessageSlices,
   useAgentStore,
   useMessageStore,
 } from "../stores/index.ts";
-import { useAgentInputStore } from "../stores/agentInputStore.ts";
 import { resetAllTaskSlices, useTaskStore } from "../stores/taskStore.ts";
 import { toApiModelSettings } from "../utils/interfaces.ts";
 import { languages } from "../utils/languages.ts";
 import { isEmptyOrBlank } from "../utils/whitespace.ts";
 
 // Import the marketing landing page component
-import MarketingLanding from "../components/MarketingLanding.tsx";
 
 const Home: NextPage = () => {
   const { t } = useTranslation("indexPage");

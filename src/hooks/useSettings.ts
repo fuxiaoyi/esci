@@ -38,9 +38,9 @@ export function useSettings(): SettingsModel {
 
   const updateLangauge = async (language: Language): Promise<void> => {
     await i18n.changeLanguage(language.code);
-    if (isMounted) {
+    if (isMounted && router.locale !== language.code) {
       const { pathname, asPath, query } = router;
-      await router.push({ pathname, query }, asPath, {
+      await router.replace({ pathname, query }, asPath, {
         locale: language.code,
       });
     }

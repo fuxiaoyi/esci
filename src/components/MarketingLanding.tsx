@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { Analytics } from "@vercel/analytics/react";
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 
 const MarketingLanding = () => {
   const [isMounted, setIsMounted] = useState(false);
