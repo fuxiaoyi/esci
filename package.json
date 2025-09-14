@@ -83,7 +83,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
-    "@types/node": "^18.19.80",
+    "@types/node": "^20.0.0",
     "@types/nodemailer": "^6.4.17",
     "@types/prettier": "^2.7.3",
     "@types/react": "^18.0.26",

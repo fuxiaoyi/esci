@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -116,9 +116,9 @@ model OAuthCredentials {
 
   // Post install
   token_type              String?
-  access_token_enc        String?   @db.Text
+  access_token_enc        String?   
   access_token_expiration DateTime?
-  refresh_token_enc       String?   @db.Text
+  refresh_token_enc       String?   
   scope                   String?
 
   create_date DateTime  @default(now())
@@ -133,8 +133,8 @@ model OAuthCredentials {
 model Agent {
   id         String      @id @default(cuid())
   userId     String
-  name       String      @db.Text
-  goal       String      @db.Text
+  name       String      
+  goal       String      
   deleteDate DateTime?
   createDate DateTime    @default(now())
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -149,8 +149,8 @@ model AgentTask {
   agentId    String
   type       String
   status     String?
-  value      String    @db.Text
-  info       String?   @db.Text
+  value      String    
+  info       String?   
   sort       Int
   deleteDate DateTime?
   createDate DateTime  @default(now())
@@ -176,7 +176,7 @@ model NewRun {
   id          String   @id @default(cuid())
   user_id     String
   create_date DateTime @default(now())
-  goal        String   @db.Text
+  goal        String   
 
   tasks Task[]
 
