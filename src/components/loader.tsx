@@ -9,11 +9,11 @@ interface LoaderProps {
   color?: string;
 }
 
-// Dynamically import RingLoader with SSR disabled
-const RingLoader = dynamic(() => import("ldrs").then((mod) => mod.RingLoader), {
+// Dynamically import ring loader with SSR disabled
+const RingLoader = dynamic(() => import("ldrs/react").then((mod) => ({ default: mod.Ring })), {
   ssr: false,
   loading: () => <div className="animate-spin rounded-full border-2 border-white border-t-transparent" style={{ width: 16, height: 16 }} />
-});
+}) as any;
 
 const Loader: FC<LoaderProps> = ({
   className,
