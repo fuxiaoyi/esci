@@ -9,7 +9,7 @@ import nextI18NextConfig from "./next-i18next.config.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -37,7 +37,7 @@ const config = {
     })
     return config;
   },
-  rewrites() {
+  async rewrites() {
       return {
           beforeFiles: [
               {
@@ -52,7 +52,9 @@ const config = {
               },
           ]
       }
-  }
+  },
+  // Ensure trailing slash is handled properly
+  trailingSlash: false
 };
 
 export default config;

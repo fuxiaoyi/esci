@@ -37,10 +37,18 @@ export function useSettings(): SettingsModel {
   }, [isMounted, router, modelSettings.language, updateSettings]);
 
   const updateLangauge = async (language: Language): Promise<void> => {
+    // Only proceed if the language is actually different
+    if (router.locale === language.code) {
+      return;
+    }
+    
+    // Update the i18n language first
     await i18n.changeLanguage(language.code);
-    if (isMounted && router.locale !== language.code) {
+    
+    if (isMounted) {
       const { pathname, asPath, query } = router;
-      await router.replace({ pathname, query }, asPath, {
+      // Use push instead of replace to avoid hard navigation issues
+      await router.push({ pathname, query }, asPath, {
         locale: language.code,
       });
     }
