@@ -25,6 +25,29 @@ import Input from "../ui/input.tsx";
 import type { Language } from "../utils/languages.ts";
 import { languages } from "../utils/languages.ts";
 
+// Define types for the API response
+interface ChatCompletionChoice {
+  index: number;
+  message: {
+    role: string;
+    content: string;
+  };
+  finish_reason: string;
+}
+
+interface ChatCompletionResponse {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  choices: ChatCompletionChoice[];
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+}
+
 const SettingsPage = () => {
   const [t] = useTranslation("settings");
   const { settings, updateSettings, updateLangauge } = useSettings();
@@ -41,7 +64,7 @@ const SettingsPage = () => {
 
     try {
       // Use a simple chat completion request to validate the API key
-      const response = await axios.post("https://api.deepseek.com/v1/chat/completions", {
+      const response = await axios.post<ChatCompletionResponse>("https://api.deepseek.com/v1/chat/completions", {
         model: "deepseek-chat",
         messages: [
           {

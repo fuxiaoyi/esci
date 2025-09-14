@@ -7,6 +7,28 @@ import type { Message } from "../../types/message";
 import type { RequestBody } from "../../utils/interfaces";
 import * as apiUtils from "../api-utils";
 
+// Types for DeepSeek API responses
+interface DeepSeekError {
+  message?: string;
+  type?: string;
+}
+
+interface DeepSeekErrorResponse {
+  error: DeepSeekError;
+}
+
+interface DeepSeekMessage {
+  content: string;
+}
+
+interface DeepSeekChoice {
+  message: DeepSeekMessage;
+}
+
+interface DeepSeekResponse {
+  choices: DeepSeekChoice[];
+}
+
 type Agent = {
   id: string;
   userId: string;
@@ -40,7 +62,7 @@ export class AgentApi {
     this.agentId = agent?.id;
   }
 
-  updateAgentGoal(goal) {
+  updateAgentGoal(goal: string): void {
     if(this.agent) {
       this.agent.goal = goal
     }
@@ -89,7 +111,7 @@ export class AgentApi {
       let errorMessage = `DeepSeek API error: ${response.statusText}`;
       
       try {
-        const errorData = await response.json();
+        const errorData = await response.json() as DeepSeekErrorResponse;
         if (errorData.error?.message) {
           errorMessage = `DeepSeek API error: ${errorData.error.message}`;
         } else if (errorData.error?.type) {
@@ -102,7 +124,7 @@ export class AgentApi {
       throw new Error(errorMessage);
     }
 
-    const data = await response.json();
+    const data = await response.json() as DeepSeekResponse;
     const content = data.choices[0]?.message?.content;
     
     if (!content) {
@@ -110,7 +132,7 @@ export class AgentApi {
     }
 
     try {
-      const tasks = JSON.parse(content);
+      const tasks = JSON.parse(content) as unknown;
       if (Array.isArray(tasks) && tasks.every(task => typeof task === 'string')) {
         return tasks;
       }
@@ -181,7 +203,7 @@ export class AgentApi {
       let errorMessage = `DeepSeek API error: ${response.statusText}`;
       
       try {
-        const errorData = await response.json();
+        const errorData = await response.json() as DeepSeekErrorResponse;
         if (errorData.error?.message) {
           errorMessage = `DeepSeek API error: ${errorData.error.message}`;
         } else if (errorData.error?.type) {
@@ -194,7 +216,7 @@ export class AgentApi {
       throw new Error(errorMessage);
     }
 
-    const data = await response.json();
+    const data = await response.json() as DeepSeekResponse;
     const content = data.choices[0]?.message?.content;
     
     if (!content) {
@@ -202,7 +224,7 @@ export class AgentApi {
     }
 
     try {
-      const analysis = JSON.parse(content);
+      const analysis = JSON.parse(content) as Partial<Analysis>;
       // Validate the analysis structure
       console.log('Analysis:', analysis);
       if (analysis.reasoning && analysis.action && analysis.arg) {

@@ -25,7 +25,7 @@ interface AuthSlice {
   setOrganization: (orgRole: OrganizationRole | undefined) => void;
 }
 
-const createLayoutSlice: StateCreator<LayoutSlice> = (set, get) => {
+const createLayoutSlice: StateCreator<LayoutSlice> = (set) => {
   return {
     ...{
       layout: {
@@ -47,7 +47,7 @@ const createLayoutSlice: StateCreator<LayoutSlice> = (set, get) => {
   };
 };
 
-const createAuthSlice: StateCreator<AuthSlice> = (set, get) => {
+const createAuthSlice: StateCreator<AuthSlice> = (set) => {
   return {
     ...{ organization: undefined },
     setOrganization: (orgRole: OrganizationRole | undefined) => {

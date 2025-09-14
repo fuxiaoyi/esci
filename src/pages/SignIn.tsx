@@ -1,9 +1,7 @@
 import { message } from "antd";
-import clsx from "clsx";
 import type { GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { getServerSession } from "next-auth/next";
 import type { BuiltInProviderType } from "next-auth/providers";
 import type { ClientSafeProvider } from "next-auth/react";
 import { getProviders, signIn, useSession, getSession } from "next-auth/react";
@@ -11,10 +9,8 @@ import type { LiteralUnion } from "next-auth/react/types";
 import React, { useState } from "react";
 import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
 
-import FadeIn from "../components/motions/FadeIn";
 import GridLayout from "../layout/grid";
-import { supabase } from "../lib/supabase";
-import { authOptions } from "../server/auth";
+import { getServerAuthSession } from "../server/auth";
 import Input from "../ui/input";
 
 
@@ -22,7 +18,9 @@ const SignIn = ({ providers }: { providers: Provider }) => {
   const { data: session } = useSession();
   const { push } = useRouter();
 
-  if (session) push("/").catch(console.error);
+  if (session) {
+    void push("/").catch(console.error);
+  }
 
   const details = Object.values(providers)
     .map((provider) => providerButtonDetails[provider.id])
@@ -123,20 +121,21 @@ const SupabaseSignin = () => {
         // Refresh the session to ensure NextAuth picks up the new authentication
         await getSession();
         // Use router.replace to avoid adding to history stack
-        router.replace("/");
+        void router.replace("/");
       } else {
         throw new Error("Login failed. Please try again.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Auth error:", error);
-      void message.error(error.message || "An error occurred. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "An error occurred. Please try again.";
+      void message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
       <div className="space-y-2">
         <label className="text-sm font-medium text-gray-700">Email address</label>
         <Input
@@ -182,7 +181,7 @@ const SupabaseSignin = () => {
       
       <div className="mt-6 text-center text-sm">
         <p className="text-gray-600">
-          Don't have an account? Please email{" "}
+          Don&apos;t have an account? Please email{" "}
           <a 
             href="mailto:dev@kongfoo.cn" 
             className="font-medium text-darkGreen-600 hover:text-darkGreen-700 transition-colors"
@@ -238,7 +237,7 @@ const ProviderSignInButton = ({ detail }: { detail: ButtonDetail }) => {
 export default SignIn;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerAuthSession(context);
 
   if (session) {
     return {

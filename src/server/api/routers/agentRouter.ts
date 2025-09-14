@@ -45,7 +45,7 @@ async function generateAgentName(goal: string) {
       model: "deepseek-chat",//"gpt-3.5-turbo",
     });
 
-    // @ts-ignore
+    // @ts-expect-error - OpenAI types may not include all model-specific response properties
     return chatCompletion.choices[0].message.content as string;
   } catch (e) {
     console.error(e);
@@ -99,7 +99,7 @@ export const agentRouter = createTRPCRouter({
       agentId: agent.id,
       type: e.type,
       ...(e.type === MESSAGE_TYPE_TASK && { status: e.status }),
-      info: e.info,
+      info: e.info ?? undefined,
       value: e.value,
       sort: 0, // TODO: Remove sort
     }));

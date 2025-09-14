@@ -34,14 +34,14 @@ const commonTransportOptions = {
 
 // 自定义日志格式化函数
 const customFormat = format.printf(info => {
-  const { timestamp, level, message, ...otherInfo } = info;
+  const { timestamp, message, ...otherInfo } = info;
 
   if (typeof message === 'object' && message !== null) {
     // 将时间戳放在消息的最前面
-    return `${timestamp} : ${JSON.stringify(message)}`;
+    return `${String(timestamp)} : ${JSON.stringify(message)}`;
   }
 
-  return `${timestamp} [${message}] : ${JSON.stringify(otherInfo)}`;
+  return `${String(timestamp)} [${String(message)}] : ${JSON.stringify(otherInfo)}`;
 });
 
 

@@ -2,6 +2,26 @@
  * Coze API integration utilities
  */
 
+// Type definitions for API responses
+interface CozeMessage {
+  content: string;
+  role?: string;
+}
+
+interface CozeChoice {
+  message: CozeMessage;
+}
+
+interface CozeResponse {
+  choices: CozeChoice[];
+}
+
+interface CozeStreamData {
+  type: string;
+  event?: string;
+  content: string;
+}
+
 // Default Coze API configuration
 export const COZE_API_CONFIG = {
   apiUrl: 'https://api.coze.cn/v3/chat',
@@ -94,10 +114,10 @@ export const callCozeAPI = async (
     } 
     // Handle non-streaming response
     else {
-      const data = await response.json();
+      const data = await response.json() as CozeResponse;
       // Extract the content from the response
-      if (data && data.choices && data.choices.length > 0 && data.choices[0].message) {
-        return data.choices[0].message.content || '';
+      if (data && data.choices && data.choices.length > 0 && data.choices[0]?.message) {
+        return data.choices[0].message?.content || '';
       }
       return '';
     }
@@ -148,7 +168,7 @@ export const extractAnswerContent = async (
           const jsonStr = line.substring(5).trim();
           if (!jsonStr || jsonStr === '[DONE]') continue;
           
-          const parsedData = JSON.parse(jsonStr);
+          const parsedData = JSON.parse(jsonStr) as CozeStreamData;
           
           // Check if this is an answer message with the completed event
           if (

@@ -1,14 +1,14 @@
-export type ResData<D = any> = {
+export type ResData<D = unknown> = {
   msg: string
   code: number
   data: D
 }
 
-export type PageData<I = any> = {
+export type PageData<I = unknown> = {
   pageNum: number
   pageSize: number
   list: I[]
   total: number
 }
 
-export type Recordable<V = any> = Record<string, V>;
+export type Recordable<V = unknown> = Record<string, V>;

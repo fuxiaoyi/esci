@@ -40,7 +40,7 @@ export const isTask = (value: unknown): value is Task => {
   try {
     taskSchema.parse(value);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 };

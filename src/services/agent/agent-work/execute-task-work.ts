@@ -4,7 +4,6 @@ import type AgentWork from "./agent-work";
 import type { Message } from "../../../types/message";
 import type { Task } from "../../../types/task";
 import { toApiModelSettings } from "../../../utils/interfaces";
-import { streamText } from "../../stream-utils";
 import type { Analysis } from "../analysis";
 import type AutonomousAgent from "../autonomous-agent";
 
@@ -13,7 +12,7 @@ export default class ExecuteTaskWork implements AgentWork {
 
   constructor(private parent: AutonomousAgent, private task: Task, private analysis: Analysis) {}
 
-  run = async () => {
+  run = () => {
     const executionMessage: Message = {
       ...this.task,
       id: v1(),
@@ -49,6 +48,8 @@ export default class ExecuteTaskWork implements AgentWork {
     if (this.parent.model) {
       this.task = this.parent.model.updateTaskStatus(this.task, "completed");
     }
+    
+    return Promise.resolve();
   };
 
   // eslint-disable-next-line @typescript-eslint/require-await

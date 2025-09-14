@@ -58,16 +58,61 @@ export interface Invitation {
   createDate?: Date
 }
 
+// Database row types for Supabase responses
+interface OrganizationUserRow {
+  id: string
+  user_id: string
+  organization_id: string
+  role: string
+  create_date: string
+  update_date?: string
+  delete_date?: string
+}
+
+interface AgentRow {
+  id: string
+  user_id: string
+  name: string
+  goal: string
+  create_date: string
+  delete_date?: string
+}
+
+interface AgentTaskRow {
+  id: string
+  agent_id: string
+  type: string
+  status?: string
+  value: string
+  info?: string
+  sort: number
+  create_date: string
+  delete_date?: string
+}
+
+interface InvitationRow {
+  id: string
+  code?: string
+  status?: string
+  create_date?: string
+}
+
 export class SupabaseDatabaseService {
   private supabase = supabase
 
   // User operations - These work with Supabase auth.users table
   async getUserByEmail(email: string): Promise<DatabaseUser | null> {
-    const { data, error } = await this.supabase.auth.admin.getUserByEmail(email)
+    const response = await this.supabase.auth.admin.listUsers({
+      page: 1,
+      perPage: 1
+    })
 
-    if (error || !data?.user) return null
-
-    const user = data.user as {
+    if (response.error || !response.data?.users) return null
+    
+    const user = response.data.users.find(u => u.email === email)
+    if (!user) return null
+    
+    const typedUser = user as {
       id: string;
       email?: string;
       user_metadata?: {
@@ -80,23 +125,23 @@ export class SupabaseDatabaseService {
       created_at: string;
     }
     return {
-      id: user.id,
-      email: user.email || '',
-      name: user.user_metadata?.name || user.email || '',
-      image: user.user_metadata?.avatar_url,
-      superAdmin: user.user_metadata?.super_admin || false,
-      inviteCode: user.user_metadata?.invite_code,
-      emailVerified: user.email_confirmed_at ? new Date(user.email_confirmed_at) : undefined,
-      createDate: new Date(user.created_at)
+      id: typedUser.id,
+      email: typedUser.email || '',
+      name: typedUser.user_metadata?.name || typedUser.email || '',
+      image: typedUser.user_metadata?.avatar_url,
+      superAdmin: typedUser.user_metadata?.super_admin || false,
+      inviteCode: typedUser.user_metadata?.invite_code,
+      emailVerified: typedUser.email_confirmed_at ? new Date(typedUser.email_confirmed_at) : undefined,
+      createDate: new Date(typedUser.created_at)
     }
   }
 
   async getUserById(id: string): Promise<DatabaseUser | null> {
-    const { data, error } = await this.supabase.auth.admin.getUserById(id)
+    const response = await this.supabase.auth.admin.getUserById(id)
 
-    if (error || !data?.user) return null
+    if (response.error || !response.data?.user) return null
 
-    const user = data.user as {
+    const user = response.data.user as {
       id: string;
       email?: string;
       user_metadata?: {
@@ -140,7 +185,7 @@ export class SupabaseDatabaseService {
   }
 
   async updateUser(id: string, updates: Partial<DatabaseUser>): Promise<DatabaseUser> {
-    const { data, error } = await this.supabase.auth.admin.updateUserById(id, {
+    const response = await this.supabase.auth.admin.updateUserById(id, {
       user_metadata: {
         name: updates.name,
         avatar_url: updates.image,
@@ -149,9 +194,20 @@ export class SupabaseDatabaseService {
       }
     })
 
-    if (error) throw new Error(`Failed to update user: ${error.message}`)
+    if (response.error) throw new Error(`Failed to update user: ${response.error.message}`)
 
-    const user = data.user
+    const user = response.data.user as {
+      id: string;
+      email?: string;
+      user_metadata?: {
+        name?: string;
+        avatar_url?: string;
+        super_admin?: boolean;
+        invite_code?: string;
+      };
+      email_confirmed_at?: string;
+      created_at: string;
+    }
     return {
       id: user.id,
       email: user.email || '',
@@ -166,7 +222,7 @@ export class SupabaseDatabaseService {
 
   // Organization operations
   async getUserOrganizations(userId: string): Promise<OrganizationUser[]> {
-    const { data, error } = await this.supabase
+    const response = await this.supabase
       .from('organization_users')
       .select(`
         *,
@@ -175,9 +231,10 @@ export class SupabaseDatabaseService {
       .eq('user_id', userId)
       .is('delete_date', null)
 
-    if (error) throw new Error(`Failed to get user organizations: ${error.message}`)
+    if (response.error) throw new Error(`Failed to get user organizations: ${response.error.message}`)
 
-    return data.map((row: any) => ({
+    const typedData = response.data as OrganizationUserRow[]
+    return typedData.map((row: OrganizationUserRow) => ({
       id: row.id,
       userId: row.user_id,
       organizationId: row.organization_id,
@@ -196,7 +253,7 @@ export class SupabaseDatabaseService {
   }): Promise<Agent> {
     console.log(`Creating agent for user: ${agentData.userId}`)
     
-    const { data, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('agents')
       .insert({
         user_id: agentData.userId,
@@ -206,26 +263,27 @@ export class SupabaseDatabaseService {
       .select()
       .single()
 
-    if (error) {
-      console.error(`Error creating agent:`, error)
-      throw new Error(`Failed to create agent: ${error.message}`)
+    if (response.error) {
+      console.error(`Error creating agent:`, response.error)
+      throw new Error(`Failed to create agent: ${response.error.message}`)
     }
 
-    console.log(`Successfully created agent: ${data.id}`)
+    const agentRow = response.data as AgentRow
+    console.log(`Successfully created agent: ${agentRow.id}`)
     return {
-      id: data.id,
-      userId: data.user_id,
-      name: data.name,
-      goal: data.goal,
-      deleteDate: data.delete_date ? new Date(data.delete_date) : undefined,
-      createDate: new Date(data.create_date)
+      id: agentRow.id,
+      userId: agentRow.user_id,
+      name: agentRow.name,
+      goal: agentRow.goal,
+      deleteDate: agentRow.delete_date ? new Date(agentRow.delete_date) : undefined,
+      createDate: new Date(agentRow.create_date)
     }
   }
 
   async getAgentsByUserId(userId: string, limit: number = 20): Promise<Agent[]> {
     console.log(`Getting agents for user: ${userId}`)
     
-    const { data, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('agents')
       .select('*')
       .eq('user_id', userId)
@@ -233,13 +291,14 @@ export class SupabaseDatabaseService {
       .order('create_date', { ascending: false })
       .limit(limit)
 
-    if (error) {
-      console.error(`Error fetching agents for user ${userId}:`, error)
-      throw new Error(`Failed to get agents: ${error.message}`)
+    if (response.error) {
+      console.error(`Error fetching agents for user ${userId}:`, response.error)
+      throw new Error(`Failed to get agents: ${response.error.message}`)
     }
 
-    console.log(`Found ${data?.length || 0} agents for user ${userId}`)
-    return data.map((agent: any) => ({
+    console.log(`Found ${response.data?.length || 0} agents for user ${userId}`)
+    const typedData = response.data as AgentRow[]
+    return typedData.map((agent: AgentRow) => ({
       id: agent.id,
       userId: agent.user_id,
       name: agent.name,
@@ -250,48 +309,51 @@ export class SupabaseDatabaseService {
   }
 
   async getAllAgentsCount(): Promise<number> {
-    const { count, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('agents')
       .select('*', { count: 'exact', head: true })
 
-    if (error) {
-      console.error('Error counting agents:', error)
+    if (response.error) {
+      console.error('Error counting agents:', response.error)
       return 0
     }
 
-    console.log(`Total agents in database: ${count || 0}`)
-    return count || 0
+    console.log(`Total agents in database: ${response.count || 0}`)
+    return response.count || 0
   }
 
   async getAgentById(id: string): Promise<Agent & { tasks: AgentTask[] } | null> {
     console.log(`Looking for agent with ID: ${id}`)
     
-    const { data: agent, error: agentError } = await supabaseAdmin
+    const agentResponse = await supabaseAdmin
       .from('agents')
       .select('*')
       .eq('id', id)
       .is('delete_date', null)
       .single()
 
-    if (agentError) {
-      console.error(`Error fetching agent ${id}:`, agentError)
+    if (agentResponse.error) {
+      console.error(`Error fetching agent ${id}:`, agentResponse.error)
       return null
     }
     
-    if (!agent) {
+    if (!agentResponse.data) {
       console.log(`No agent found with ID: ${id}`)
       return null
     }
 
-    const { data: tasks, error: tasksError } = await supabaseAdmin
+    const agent = agentResponse.data as AgentRow
+
+    const tasksResponse = await supabaseAdmin
       .from('agent_tasks')
       .select('*')
       .eq('agent_id', id)
       .is('delete_date', null)
       .order('create_date', { ascending: true })
 
-    if (tasksError) throw new Error(`Failed to get agent tasks: ${tasksError.message}`)
+    if (tasksResponse.error) throw new Error(`Failed to get agent tasks: ${tasksResponse.error.message}`)
 
+    const typedTasks = tasksResponse.data as AgentTaskRow[]
     return {
       id: agent.id,
       userId: agent.user_id,
@@ -299,7 +361,7 @@ export class SupabaseDatabaseService {
       goal: agent.goal,
       deleteDate: agent.delete_date ? new Date(agent.delete_date) : undefined,
       createDate: new Date(agent.create_date),
-      tasks: tasks.map((task: any) => ({
+      tasks: typedTasks.map((task: AgentTaskRow) => ({
         id: task.id,
         agentId: task.agent_id,
         type: task.type,
@@ -316,7 +378,7 @@ export class SupabaseDatabaseService {
   async updateAgent(id: string, updates: Partial<Agent>): Promise<Agent> {
     console.log(`Updating agent ${id} with updates:`, updates)
     
-    const { data, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('agents')
       .update({
         name: updates.name,
@@ -327,15 +389,16 @@ export class SupabaseDatabaseService {
       .select()
       .single()
 
-    if (error) throw new Error(`Failed to update agent: ${error.message}`)
+    if (response.error) throw new Error(`Failed to update agent: ${response.error.message}`)
 
+    const agentData = response.data as AgentRow
     return {
-      id: data.id,
-      userId: data.user_id,
-      name: data.name,
-      goal: data.goal,
-      deleteDate: data.delete_date ? new Date(data.delete_date) : undefined,
-      createDate: new Date(data.create_date)
+      id: agentData.id,
+      userId: agentData.user_id,
+      name: agentData.name,
+      goal: agentData.goal,
+      deleteDate: agentData.delete_date ? new Date(agentData.delete_date) : undefined,
+      createDate: new Date(agentData.create_date)
     }
   }
 
@@ -349,7 +412,7 @@ export class SupabaseDatabaseService {
   }>): Promise<AgentTask[]> {
     console.log(`Creating ${tasks.length} agent tasks`)
     
-    const { data, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('agent_tasks')
       .insert(tasks.map(task => ({
         agent_id: task.agentId,
@@ -361,13 +424,14 @@ export class SupabaseDatabaseService {
       })))
       .select()
 
-    if (error) {
-      console.error(`Error creating agent tasks:`, error)
-      throw new Error(`Failed to create agent tasks: ${error.message}`)
+    if (response.error) {
+      console.error(`Error creating agent tasks:`, response.error)
+      throw new Error(`Failed to create agent tasks: ${response.error.message}`)
     }
 
-    console.log(`Successfully created ${data.length} agent tasks`)
-    return data.map((task: any) => ({
+    console.log(`Successfully created ${response.data.length} agent tasks`)
+    const typedData = response.data as AgentTaskRow[]
+    return typedData.map((task: AgentTaskRow) => ({
       id: task.id,
       agentId: task.agent_id,
       type: task.type,
@@ -382,45 +446,47 @@ export class SupabaseDatabaseService {
 
   // Invitation operations
   async getInvitationByCode(code: string): Promise<Invitation | null> {
-    const { data, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('invitations')
       .select('*')
       .eq('code', code)
       .single()
 
-    if (error || !data) return null
+    if (response.error || !response.data) return null
 
+    const invitationData = response.data as InvitationRow
     return {
-      id: data.id,
-      code: data.code,
-      status: data.status,
-      createDate: data.create_date ? new Date(data.create_date) : undefined
+      id: invitationData.id,
+      code: invitationData.code,
+      status: invitationData.status,
+      createDate: invitationData.create_date ? new Date(invitationData.create_date) : undefined
     }
   }
 
   async updateInvitationStatus(id: string, status: string): Promise<void> {
-    const { error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('invitations')
       .update({ status })
       .eq('id', id)
 
-    if (error) throw new Error(`Failed to update invitation: ${error.message}`)
+    if (response.error) throw new Error(`Failed to update invitation: ${response.error.message}`)
   }
 
   async createInvitation(code: string): Promise<Invitation> {
-    const { data, error } = await supabaseAdmin
+    const response = await supabaseAdmin
       .from('invitations')
       .insert({ code })
       .select()
       .single()
 
-    if (error) throw new Error(`Failed to create invitation: ${error.message}`)
+    if (response.error) throw new Error(`Failed to create invitation: ${response.error.message}`)
 
+    const invitationData = response.data as InvitationRow
     return {
-      id: data.id,
-      code: data.code,
-      status: data.status,
-      createDate: data.create_date ? new Date(data.create_date) : undefined
+      id: invitationData.id,
+      code: invitationData.code,
+      status: invitationData.status,
+      createDate: invitationData.create_date ? new Date(invitationData.create_date) : undefined
     }
   }
 
@@ -438,13 +504,14 @@ export class SupabaseDatabaseService {
       query = query.eq('status', status)
     }
 
-    const { data, error, count } = await query
+    const response = await query
       .order('create_date', { ascending: false })
       .range((pageNum - 1) * pageSize, pageNum * pageSize - 1)
 
-    if (error) throw new Error(`Failed to get invitations: ${error.message}`)
+    if (response.error) throw new Error(`Failed to get invitations: ${response.error.message}`)
 
-    const list = (data || []).map((item: any) => ({
+    const typedData = response.data as InvitationRow[]
+    const list = (typedData || []).map((item: InvitationRow) => ({
       id: item.id,
       code: item.code,
       status: item.status,
@@ -453,7 +520,7 @@ export class SupabaseDatabaseService {
 
     return {
       list,
-      total: count || 0,
+      total: response.count || 0,
       pageNum,
       pageSize
     }

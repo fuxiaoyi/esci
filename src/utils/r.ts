@@ -1,6 +1,6 @@
 import { RCodeConstant } from "../constant/RCodeConstant";
 
-export default class R<D = any> {
+export default class R<D = unknown> {
   msg = '';
   code = undefined as undefined | number;
   data = null as D | null;

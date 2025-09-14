@@ -45,10 +45,10 @@ const config = {
                   has: [
                       {
                           type: 'host',
-                          value: 'kongfoo.ai',
+                          value: 'e-sci.org',
                       },
                   ],
-                  destination: '/landing-page',
+                  destination: '/',
               },
           ]
       }

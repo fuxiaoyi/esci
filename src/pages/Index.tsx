@@ -1,5 +1,4 @@
 import { type GetStaticProps, type NextPage } from "next";
-import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React, { useEffect, useRef } from "react";
 
@@ -24,7 +23,7 @@ import {
   useAgentStore,
   useMessageStore,
 } from "../stores/index.ts";
-import { resetAllTaskSlices, useTaskStore } from "../stores/taskStore.ts";
+import { resetAllTaskSlices } from "../stores/taskStore.ts";
 import { toApiModelSettings } from "../utils/interfaces.ts";
 import { languages } from "../utils/languages.ts";
 import { isEmptyOrBlank } from "../utils/whitespace.ts";
@@ -32,10 +31,8 @@ import { isEmptyOrBlank } from "../utils/whitespace.ts";
 // Import the marketing landing page component
 
 const Home: NextPage = () => {
-  const { t } = useTranslation("indexPage");
   const addMessage = useMessageStore.use.addMessage();
   const messages = useMessageStore.use.messages();
-  const tasks = useTaskStore.use.tasks();
 
   const setAgent = useAgentStore.use.setAgent();
   const agentLifecycle = useAgentStore.use.lifecycle();

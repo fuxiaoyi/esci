@@ -1,15 +1,10 @@
-import type { IncomingMessage, ServerResponse } from "http";
-
-import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
+import type { GetServerSidePropsContext } from "next";
 import type { AuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 
 import { authOptions as supabaseAuthOptions } from "./supabase-auth";
 
-export const authOptions = (
-  req: NextApiRequest | IncomingMessage,
-  res: NextApiResponse | ServerResponse
-): AuthOptions => {
+export const authOptions = (): AuthOptions => {
   return supabaseAuthOptions;
 };
 
@@ -22,5 +17,5 @@ export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
 }) => {
-  return getServerSession(ctx.req, ctx.res, authOptions(ctx.req, ctx.res));
+  return getServerSession(ctx.req, ctx.res, authOptions());
 };

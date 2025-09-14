@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error) {
     console.error("Error fetching invitations:", error);
     return res.status(500).json(
-      R.error("Failed to fetch invitations")
+      R.fail("Failed to fetch invitations")
     );
   }
 }

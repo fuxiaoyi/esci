@@ -25,5 +25,5 @@ export default async function copyToClipboard(text: string) {
     }
   }
 
-  return successful ? Promise.resolve() : Promise.reject();
+  return successful ? Promise.resolve() : Promise.reject(new Error('Failed to copy to clipboard'));
 }

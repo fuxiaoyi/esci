@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         inviteCode: { label: "Invite Code", type: "text" },
         name: { label: "Name", type: "text" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const { email, password, inviteCode, name } = credentials || {};
 
         if (!email) {
@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           if (!inviteCode) {
             try {
               // 使用 Supabase 进行邮箱密码登录
-              const { user: supabaseUser, session } = await supabaseAuth.signInWithEmail(email, password);
+              const { user: supabaseUser } = await supabaseAuth.signInWithEmail(email, password);
               
               if (!supabaseUser) {
                 throw new Error("登录失败");
@@ -60,8 +60,10 @@ export const authOptions: NextAuthOptions = {
               return {
                 id: supabaseUser.id,
                 email: supabaseUser.email || email,
-                name: supabaseUser.user_metadata?.name || email,
-                image: supabaseUser.user_metadata?.avatar_url,
+                name: (supabaseUser.user_metadata?.name as string) || email,
+                image: supabaseUser.user_metadata?.avatar_url as string | undefined,
+                superAdmin: false,
+                organizations: [],
               };
             } catch (error) {
               throw new Error("登录失败: " + (error instanceof Error ? error.message : String(error)));
@@ -94,14 +96,18 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // 使用 Supabase 进行邮箱注册
-          const { user: supabaseUser, session } = await supabaseAuth.signUpWithEmail(email, password, { 
-            name: name || email,
-            invite_code: inviteCode 
+          const { user: supabaseUser } = await supabaseAuth.signUpWithEmail(email, password, { 
+            name: name || email
           });
           
           if (!supabaseUser) {
             throw new Error("注册失败");
           }
+
+          // 更新用户元数据，添加邀请码信息
+          await supabaseDb.updateUser(supabaseUser.id, {
+            inviteCode: inviteCode
+          });
 
           // 更新库里邀请码状态
           await supabaseDb.updateInvitationStatus(invitation.id, "used");
@@ -110,8 +116,10 @@ export const authOptions: NextAuthOptions = {
           return {
             id: supabaseUser.id,
             email: supabaseUser.email || email,
-            name: supabaseUser.user_metadata?.name || name || email,
-            image: supabaseUser.user_metadata?.avatar_url,
+            name: (supabaseUser.user_metadata?.name as string) || name || email,
+            image: supabaseUser.user_metadata?.avatar_url as string | undefined,
+            superAdmin: false,
+            organizations: [],
           };
         } catch (error) {
           throw new Error("注册失败: " + (error instanceof Error ? error.message : String(error)));
@@ -123,7 +131,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/signin",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
@@ -141,7 +149,7 @@ export const authOptions: NextAuthOptions = {
         try {
           const user = await supabaseDb.getUserById(token.id as string);
           if (user) {
-            session.user.superAdmin = user.superAdmin;
+            session.user.superAdmin = user.superAdmin || false;
             
             // Get user organizations
             const organizations = await supabaseDb.getUserOrganizations(user.id);

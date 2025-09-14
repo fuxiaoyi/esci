@@ -4,8 +4,6 @@ import { v1 } from "uuid";
 import type AgentWork from "./agent-work";
 import type { Message } from "../../../types/message";
 import { getCozeAnswerContent } from "../../../utils/coze-api";
-import { toApiModelSettings } from "../../../utils/interfaces";
-import { streamText } from "../../stream-utils";
 import type AutonomousAgent from "../autonomous-agent";
 
 export default class SummarizeWork implements AgentWork {

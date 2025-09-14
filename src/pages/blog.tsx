@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -7,8 +8,29 @@ import FadeIn from "../components/motions/FadeIn";
 import NavBar from "../components/NavBar";
 import { getSortedPostsData } from "../lib/posts";
 
+// Define proper TypeScript interfaces for blog post data
+interface Author {
+  name: string;
+  role: string;
+  href: string;
+  imageUrl: string;
+}
 
-export default function BlogPage({ allPostsData }: { allPostsData: any[] }) { 
+interface Category {
+  title: string;
+  href: string;
+}
+
+interface BlogPost {
+  id: string;
+  title: string;
+  date: string;
+  imageUrl: string;
+  category: Category;
+  author: Author;
+}
+
+export default function BlogPage({ allPostsData }: { allPostsData: BlogPost[] }) { 
   const router = useRouter();
 
   return (
@@ -33,7 +55,9 @@ export default function BlogPage({ allPostsData }: { allPostsData: any[] }) {
               </main>
               <div className="flex-grow overflow-y-auto">
                 <div className="mx-auto mb-8 max-w-2xl cursor-pointer sm:mb-16">
-                  {allPostsData.map(({ id, title, date, imageUrl, category, author }: any) => (
+                  {allPostsData.map((post: BlogPost) => {
+                    const { id, title, date, imageUrl, category, author } = post;
+                    return (
                     <article
                       key={id}
                       className="flex flex-col items-start justify-between rounded-lg p-3 transition-all duration-300 hover:bg-white/5"
@@ -43,9 +67,11 @@ export default function BlogPage({ allPostsData }: { allPostsData: any[] }) {
                     >
                       <div className="relative w-full">
                         <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
-                        <img
+                        <Image
                           src={imageUrl}
                           alt=""
+                          width={800}
+                          height={450}
                           className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
                         />
                       </div>
@@ -65,9 +91,11 @@ export default function BlogPage({ allPostsData }: { allPostsData: any[] }) {
                           </h3>
                         </div>
                         <div className="relative mb-10 mt-4 flex items-center gap-x-2 sm:mt-6">
-                          <img
+                          <Image
                             src={author.imageUrl}
                             alt=""
+                            width={40}
+                            height={40}
                             className="h-8 w-8 rounded-full bg-gray-100 sm:h-10 sm:w-10"
                           />
                           <div className="text-sm leading-6">
@@ -82,7 +110,8 @@ export default function BlogPage({ allPostsData }: { allPostsData: any[] }) {
                         </div>
                       </div>
                     </article>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
               <footer className="flex flex-col items-center justify-center gap-2 pb-2 sm:gap-4 sm:pb-4 lg:flex-row">
