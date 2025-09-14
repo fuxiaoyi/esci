@@ -1,4 +1,4 @@
-import { Ring } from "@uiball/loaders";
+import dynamic from "next/dynamic";
 import type { FC } from "react";
 
 interface LoaderProps {
@@ -9,6 +9,12 @@ interface LoaderProps {
   color?: string;
 }
 
+// Dynamically import RingLoader with SSR disabled
+const RingLoader = dynamic(() => import("ldrs").then((mod) => mod.RingLoader), {
+  ssr: false,
+  loading: () => <div className="animate-spin rounded-full border-2 border-white border-t-transparent" style={{ width: 16, height: 16 }} />
+});
+
 const Loader: FC<LoaderProps> = ({
   className,
   size = 16,
@@ -18,7 +24,7 @@ const Loader: FC<LoaderProps> = ({
 }) => {
   return (
     <div className={className}>
-      <Ring size={size} speed={speed} color={color} lineWeight={lineWeight} />
+      <RingLoader size={size} speed={speed} color={color} stroke={lineWeight} />
     </div>
   );
 };
