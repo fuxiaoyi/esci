@@ -2,7 +2,7 @@
 import {z} from "zod";
 
 const requiredForProduction = () =>
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === "production" || process.env.VERCEL
         ? z.string().min(1).trim()
         : z.string().min(1).trim().optional();
 
@@ -21,9 +21,14 @@ export const serverSchema = z.object({
     NEXTAUTH_URL: z.preprocess(
         // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
         // Since NextAuth.js automatically uses the VERCEL_URL if present.
-        (str) => process.env.VERCEL_URL ?? str,
+        (str) => {
+            if (process.env.VERCEL_URL) {
+                return `https://${process.env.VERCEL_URL}`;
+            }
+            return str;
+        },
         // VERCEL_URL doesn't include `https` so it cant be validated as a URL
-        process.env.VERCEL ? z.string() : z.string().url()
+        process.env.VERCEL ? z.string().url() : z.string().url()
     ),
     OPENAI_API_KEY: z.string().min(1).trim().optional(),
 

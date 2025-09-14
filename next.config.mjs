@@ -17,6 +17,10 @@ const config = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  // Optimize for Vercel deployment
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
   /* If trying out the experimental appDir, comment the i18n config out
    * @see https://github.com/vercel/next.js/issues/41980 */
   i18n: nextI18NextConfig.i18n,
