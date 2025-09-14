@@ -8,14 +8,16 @@ import winston, { createLogger, format } from 'winston';
 // 引入 winston-daily-rotate-file 模块，用于按天轮转日志文件
 import DailyRotateFile from 'winston-daily-rotate-file';
 
-// 设置日志目录，将日志目录设置为当前文件所在目录下的 logs 文件夹
+// 设置日志目录，根据环境选择适当的目录
+// 在服务器环境中使用 /tmp 目录，在本地开发环境中使用项目根目录下的 logs 文件夹
+const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === 'production';
 const projectRoot = process.cwd();
-const logDirectory = join(projectRoot, 'logs');
+const logDirectory = isServerless ? '/tmp/logs' : join(projectRoot, 'logs');
 
 console.log("logDirectory", logDirectory)
 // 确保 logs 目录存在，如果不存在则创建该目录
 if (!existsSync(logDirectory)) {
-  mkdirSync(logDirectory);
+  mkdirSync(logDirectory, { recursive: true });
 }
 
 // 公共配置项，用于配置日志文件的轮转相关设置
@@ -65,7 +67,17 @@ export const logger = createLogger({
     customFormat // 使用自定义格式化函数
   ),
   // 配置日志传输，定义日志输出的目标
-  transports: [
+  transports: isServerless ? [
+    // 在服务器环境中，只使用控制台输出，避免文件系统权限问题
+    new winston.transports.Console({
+      level: 'info',
+      format: format.combine(
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        format.colorize(),
+        customFormat
+      )
+    })
+  ] : [
     // 用于记录 error 级别的日志，日志文件名为 %DATE%-error.log
     new DailyRotateFile({
       filename: getLogFilePath("error"),
