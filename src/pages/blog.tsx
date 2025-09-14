@@ -8,7 +8,7 @@ import NavBar from "../components/NavBar";
 import { getSortedPostsData } from "../lib/posts";
 
 
-export default function BlogPage({ allPostsData }) { 
+export default function BlogPage({ allPostsData }: { allPostsData: any[] }) { 
   const router = useRouter();
 
   return (
@@ -33,12 +33,12 @@ export default function BlogPage({ allPostsData }) {
               </main>
               <div className="flex-grow overflow-y-auto">
                 <div className="mx-auto mb-8 max-w-2xl cursor-pointer sm:mb-16">
-                  {allPostsData.map(({ id, title, date, imageUrl, category, author }) => (
+                  {allPostsData.map(({ id, title, date, imageUrl, category, author }: any) => (
                     <article
                       key={id}
                       className="flex flex-col items-start justify-between rounded-lg p-3 transition-all duration-300 hover:bg-white/5"
                       onClick={() => {
-                        router.push(`/blog/${id}`).catch(console.error);
+                        void router.push(`/blog/${id}`).catch(console.error);
                       }}
                     >
                       <div className="relative w-full">
@@ -99,7 +99,7 @@ export default function BlogPage({ allPostsData }) {
   );
 }
 
-export async function getStaticProps() {
+export function getStaticProps() {
   const allPostsData = getSortedPostsData();
   return {
     props: {

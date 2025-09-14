@@ -1,6 +1,7 @@
 import { CopyOutlined } from '@ant-design/icons';
 import { Table, Button, Form, message, Card, Select } from 'antd';
 import { Pagination } from "antd";
+import type { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import React, { useEffect, useState } from 'react';
 
@@ -57,7 +58,7 @@ const Invitation = () => {
 
   const genInvitation = () => {
     setAddCodeLoading(true)
-    invitationApi.genInvitation().then((res) => {
+    invitationApi.genInvitation().then(() => {
       setAddCodeLoading(false)
       void message.success("生成成功~")
       setPageNum(1)
@@ -90,7 +91,7 @@ const Invitation = () => {
 
   useEffect(() => {
     getInvitationList(pageNum, pageSize, status)
-  }, [])
+  }, [pageNum, pageSize, status])
 
   return (
     <div className="min-h-screen p-8 bg-white">
@@ -131,8 +132,7 @@ const Invitation = () => {
 
 export default Invitation;
 
-export async function getServerSideProps(context) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
 
   if (!session || !session.user?.superAdmin) {

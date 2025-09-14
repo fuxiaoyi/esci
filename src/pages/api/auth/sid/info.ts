@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Test Supabase connection by attempting to get the current session
     // This is a lightweight operation that will fail if Supabase is unreachable
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    const { error: sessionError } = await supabase.auth.getSession();
     
     if (sessionError) {
       console.warn("Supabase session check failed:", sessionError.message);
@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       // Additional health check: try to ping Supabase with a simple query
       // Using a minimal query that should work even without authentication
-      const { data: healthData, error: healthError } = await supabase
+      const { error: healthError } = await supabase
         .from('_supabase_migrations')
         .select('version')
         .limit(1);

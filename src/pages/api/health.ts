@@ -32,7 +32,7 @@ export default function handler(
     };
 
     res.status(200).json(healthData);
-  } catch (error) {
+  } catch {
     res.status(500).json({
       status: 'error',
       timestamp: new Date().toISOString(),

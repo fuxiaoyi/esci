@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import type { Session } from "next-auth";
-import { useTranslation } from "next-i18next";
 import type { FC } from "react";
 import React, { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -26,7 +25,11 @@ const AuthItem: FC<{
           classname
         )}
         onClick={() => {
-          user ? setShowDialog(true) : void signIn();
+          if (user) {
+            setShowDialog(true);
+          } else {
+            void signIn();
+          }
         }}
       >
         {user && (

@@ -7,10 +7,8 @@ import React, { useState } from "react";
 import {
   FaCheckCircle,
   FaCoins,
-  FaExclamationCircle,
   FaGlobe,
   FaKey,
-  FaRobot,
   FaSyncAlt,
   FaThermometerFull,
 } from "react-icons/fa";
@@ -18,11 +16,9 @@ import {
 import nextI18NextConfig from "../../next-i18next.config.js";
 import FadeIn from "../components/motions/FadeIn.tsx";
 import { useAuth } from "../hooks/useAuth.ts";
-import type { LLMModel } from "../hooks/useModels.ts";
 import { useModels } from "../hooks/useModels.ts";
 import { useSettings } from "../hooks/useSettings.ts";
 import DashboardLayout from "../layout/dashboard.tsx";
-import type { GPTModelNames } from "../types/index.ts";
 import Button from "../ui/button.tsx";
 import Combo from "../ui/combox.tsx";
 import Input from "../ui/input.tsx";
@@ -33,7 +29,7 @@ const SettingsPage = () => {
   const [t] = useTranslation("settings");
   const { settings, updateSettings, updateLangauge } = useSettings();
   const { session } = useAuth({ protectedRoute: true });
-  const { models, getModel } = useModels();
+  const { getModel } = useModels();
 
   const [isApiKeyValid, setIsApiKeyValid] = useState<boolean | undefined>(undefined);
 
@@ -62,7 +58,7 @@ const SettingsPage = () => {
       });
 
       // Check if the response is valid
-      if (response.data && response.data.choices && response.data.choices.length > 0) {
+      if (response.data?.choices?.length > 0) {
         setIsApiKeyValid(true);
       } else {
         setIsApiKeyValid(false);
@@ -80,17 +76,17 @@ const SettingsPage = () => {
     has_access: true,
   };
 
-  const updateModel = (model: LLMModel) => {
-    if (settings.maxTokens > model.max_tokens) {
-      updateSettings("maxTokens", model.max_tokens);
-    }
+  // const updateModel = (model: LLMModel) => {
+  //   if (settings.maxTokens > model.max_tokens) {
+  //     updateSettings("maxTokens", model.max_tokens);
+  //   }
 
-    updateSettings("customModelName", model.name as GPTModelNames);
-  };
+  //   updateSettings("customModelName", model.name as GPTModelNames);
+  // };
 
-  const onDisconnect = () => {
-    return Promise.resolve();
-  };
+  // const onDisconnect = () => {
+  //   return Promise.resolve();
+  // };
 
   return (
     <DashboardLayout>
@@ -115,7 +111,7 @@ const SettingsPage = () => {
                 value={settings.language}
                 valueMapper={(e) => e.name}
                 onChange={(e) => {
-                  updateLangauge(e).catch(console.error);
+                  void updateLangauge(e).catch(console.error);
                 }}
                 items={languages}
                 icon={<FaGlobe />}
@@ -139,7 +135,9 @@ const SettingsPage = () => {
                 className="flex-grow-1 mr-2"
                 right={
                   <Button
-                    onClick={validateApiKey}
+                    onClick={() => {
+                      void validateApiKey();
+                    }}
                     className={clsx(
                       "transition-400 h-11 w-16 rounded text-sm text-white duration-200",
                       isApiKeyValid === undefined && "bg-gray-500 hover:bg-gray-700",

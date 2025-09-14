@@ -66,8 +66,6 @@ export const config = {
 };
 
 async function buffer(req: NextApiRequest) {
-  const chunks: Buffer[] = [];
-  
   return new Promise<Buffer>((resolve, reject) => {
     let body = Buffer.alloc(0);
     

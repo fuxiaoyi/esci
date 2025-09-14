@@ -9,7 +9,8 @@ const Custom404 = () => {
   useEffect(() => {
     // Redirect to home page after 3 seconds
     const timer = setTimeout(() => {
-      router.push("/").catch(console.error);
+      // Use replace instead of push to avoid hard navigation error
+      router.replace("/").catch(console.error);
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -29,7 +30,9 @@ const Custom404 = () => {
               Redirecting to home page in 3 seconds...
             </p>
             <button
-              onClick={() => router.push("/").catch(console.error)}
+              onClick={() => {
+                void router.replace("/").catch(console.error);
+              }}
               className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Go Home Now

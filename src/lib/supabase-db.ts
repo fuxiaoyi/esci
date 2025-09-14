@@ -1,5 +1,4 @@
 import { supabase, supabaseAdmin } from './supabase'
-import { serverEnv } from '../env/schema.mjs'
 
 export interface DatabaseUser {
   id: string
@@ -66,7 +65,7 @@ export class SupabaseDatabaseService {
   async getUserByEmail(email: string): Promise<DatabaseUser | null> {
     const { data, error } = await this.supabase.auth.admin.getUserByEmail(email)
 
-    if (error || !data.user) return null
+    if (error || !data?.user) return null
 
     const user = data.user as {
       id: string;
@@ -95,7 +94,7 @@ export class SupabaseDatabaseService {
   async getUserById(id: string): Promise<DatabaseUser | null> {
     const { data, error } = await this.supabase.auth.admin.getUserById(id)
 
-    if (error || !data.user) return null
+    if (error || !data?.user) return null
 
     const user = data.user as {
       id: string;
@@ -178,7 +177,7 @@ export class SupabaseDatabaseService {
 
     if (error) throw new Error(`Failed to get user organizations: ${error.message}`)
 
-    return data.map(row => ({
+    return data.map((row: any) => ({
       id: row.id,
       userId: row.user_id,
       organizationId: row.organization_id,
@@ -240,7 +239,7 @@ export class SupabaseDatabaseService {
     }
 
     console.log(`Found ${data?.length || 0} agents for user ${userId}`)
-    return data.map(agent => ({
+    return data.map((agent: any) => ({
       id: agent.id,
       userId: agent.user_id,
       name: agent.name,
@@ -300,7 +299,7 @@ export class SupabaseDatabaseService {
       goal: agent.goal,
       deleteDate: agent.delete_date ? new Date(agent.delete_date) : undefined,
       createDate: new Date(agent.create_date),
-      tasks: tasks.map(task => ({
+      tasks: tasks.map((task: any) => ({
         id: task.id,
         agentId: task.agent_id,
         type: task.type,
@@ -368,7 +367,7 @@ export class SupabaseDatabaseService {
     }
 
     console.log(`Successfully created ${data.length} agent tasks`)
-    return data.map(task => ({
+    return data.map((task: any) => ({
       id: task.id,
       agentId: task.agent_id,
       type: task.type,
@@ -445,7 +444,7 @@ export class SupabaseDatabaseService {
 
     if (error) throw new Error(`Failed to get invitations: ${error.message}`)
 
-    const list = (data || []).map(item => ({
+    const list = (data || []).map((item: any) => ({
       id: item.id,
       code: item.code,
       status: item.status,

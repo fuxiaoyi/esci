@@ -61,7 +61,7 @@ export default function BlogPost({
   );
 }
 
-export async function getStaticPaths() {
+export function getStaticPaths() {
   // Fetch the list of blog post slugs or IDs dynamically
   const allPostsData = getSortedPostsData();
 
@@ -76,7 +76,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: { params: { slug: string } }) {
+export function getStaticProps({ params }: { params: { slug: string } }) {
   const postData = getPostData(params.slug);
 
   return {

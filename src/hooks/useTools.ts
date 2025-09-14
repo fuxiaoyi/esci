@@ -66,7 +66,7 @@ const loadTools = (key: string) => {
       const tool = obj.find((t) => t.name === db_tool.name);
       return tool ?? { ...db_tool, active: false };
     });
-  } catch (error) {
+  } catch {
     activeTools = allTools.tools.map((toolModel) => ({ ...toolModel, active: false }));
   }
 

@@ -14,7 +14,7 @@ const Welcome = () => {
 
   useEffect(() => {
     setIsMounted(true);
-    controls.start({
+    void controls.start({
       scale: 1,
       y: 0,
       transition: { type: "spring", stiffness: 80, damping: 15, mass: 1 },
@@ -23,7 +23,7 @@ const Welcome = () => {
 
   useEffect(() => {
     if (buttonClicked) {
-      controls.start({
+      void controls.start({
         opacity: 0,
         transition: { duration: 0.75 },
       });
@@ -35,7 +35,7 @@ const Welcome = () => {
     setTimeout(() => {
       // Wait 1 second and redirect
       if (isMounted) {
-        router.push("/").catch(console.error);
+        void router.push("/").catch(console.error);
       }
     }, 1000);
   };

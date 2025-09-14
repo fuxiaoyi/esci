@@ -16,6 +16,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
+    "@eslint/config-array": "^0.21.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "@eslint/object-schema": "^2.1.6",
     "@headlessui/react": "^1.7.14",
     "@radix-ui/react-switch": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.4",
@@ -64,6 +68,7 @@
     "redis": "^4.7.0",
     "rehype-highlight": "^6.0.0",
     "remark-gfm": "^3.0.1",
+    "rimraf": "^5.0.10",
     "sass": "^1.83.4",
     "stripe": "^17.7.0",
     "superjson": "1.9.1",

@@ -101,7 +101,7 @@ export const ToolsDialog: React.FC<{
                 type="text"
                 //todo : modify when backend is ready
                 value={settings.targetProtein}
-                onChange={(e) => {
+                onChange={() => {
                 //todo : modify when backend is ready
                 //  updateSettings("customApiKey", e.target.value);
                 }}
@@ -120,7 +120,7 @@ export const ToolsDialog: React.FC<{
                 type="text"
                 //todo : modify when backend is ready
                 value={settings.targetSubstrate}
-                onChange={(e) => {
+                onChange={() => {
                 //todo : modify when backend is ready
                 //  updateSettings("customApiKey", e.target.value);
                 }}

@@ -1,13 +1,7 @@
 import type { IconType } from "react-icons";
 import {
-  FaDiscord,
-  FaFileCode,
   FaGear,
-  FaGithub,
   FaHouse,
-  FaLinkedin,
-  FaQuestion,
-  FaXTwitter,
 } from "react-icons/fa6";
 
 type LinkMetadata = {
