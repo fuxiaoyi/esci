@@ -45,7 +45,7 @@ const config = {
                   has: [
                       {
                           type: 'host',
-                          value: 'e-sci.org',
+                          value: 'chat.e-sci.org',
                       },
                   ],
                   destination: '/',
