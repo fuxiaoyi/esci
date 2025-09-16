@@ -39,7 +39,7 @@ export function useAuth(
   }, [isMounted, protectedRoute, isAllowed, status, session, push]);
 
   const handleSignIn = async () => {
-    await push('/SignIn');
+    await push('/signin');
   };
 
   const handleSignOut = async () => {

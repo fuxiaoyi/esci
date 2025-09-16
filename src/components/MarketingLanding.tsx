@@ -55,13 +55,13 @@ const Header = ({ isMounted }: { isMounted: boolean }) => {
 
   const handleSignIn = () => {
     if (isMounted) {
-      void router.push('/SignIn');
+      void router.push('/signin');
     }
   };
 
   const handleGetStarted = () => {
     if (isMounted) {
-      void router.push('/SignIn');
+      void router.push('/signin');
     }
   };
 

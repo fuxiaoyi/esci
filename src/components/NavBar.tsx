@@ -16,7 +16,7 @@ import HomeIcon from "../../public/icons/icon-home.svg";
 import PricingIcon from "../../public/icons/icon-pricing.svg";
 
 const navigation = [
-  { name: "Sign In", href: "/SignIn", icon: <HomeIcon /> },
+  { name: "Sign In", href: "/signin", icon: <HomeIcon /> },
   { name: "Blog", href: "/blog", icon: <BlogsIcon /> },
   { name: "Pricing", href: "https://agentds.kongfoo.ai/plan", icon: <PricingIcon /> },
   {

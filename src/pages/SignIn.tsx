@@ -1,5 +1,5 @@
 import { message } from "antd";
-import type { GetServerSidePropsContext } from "next";
+import type { GetServerSidePropsContext, GetStaticProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { BuiltInProviderType } from "next-auth/providers";
@@ -8,10 +8,13 @@ import { getProviders, signIn, useSession, getSession } from "next-auth/react";
 import type { LiteralUnion } from "next-auth/react/types";
 import React, { useState } from "react";
 import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import GridLayout from "../layout/grid";
 import { getServerAuthSession } from "../server/auth";
 import Input from "../ui/input";
+import { languages } from "../utils/languages";
+import nextI18NextConfig from "../../next-i18next.config.js";
 
 
 const SignIn = ({ providers }: { providers: Provider }) => {
@@ -236,18 +239,14 @@ const ProviderSignInButton = ({ detail }: { detail: ButtonDetail }) => {
 
 export default SignIn;
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getServerAuthSession(context);
-
-  if (session) {
-    return {
-      redirect: {
-        destination: "/",
-      },
-    };
-  }
+export const getStaticProps: GetStaticProps = async ({ locale = "en" }) => {
+  const supportedLocales = languages.map((language) => language.code);
+  const chosenLocale = supportedLocales.includes(locale) ? locale : "en";
 
   return {
-    props: { providers: (await getProviders()) ?? {} },
+    props: {
+      providers: (await getProviders()) ?? {},
+      ...(await serverSideTranslations(chosenLocale, nextI18NextConfig.ns)),
+    },
   };
-}
+};
