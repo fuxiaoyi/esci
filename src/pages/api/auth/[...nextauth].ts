@@ -5,7 +5,7 @@ import { authOptions } from "../../../server/auth";
 
 const auth = (req: NextApiRequest, res: NextApiResponse) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return NextAuth(req, res, authOptions(req, res));
+  return NextAuth(req, res, authOptions());
 };
 
 export default auth;

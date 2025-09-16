@@ -1,20 +1,19 @@
 import { message } from "antd";
-import type { GetServerSidePropsContext, GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { BuiltInProviderType } from "next-auth/providers";
 import type { ClientSafeProvider } from "next-auth/react";
 import { getProviders, signIn, useSession, getSession } from "next-auth/react";
 import type { LiteralUnion } from "next-auth/react/types";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React, { useState } from "react";
 import { FaDiscord, FaGithub, FaGoogle } from "react-icons/fa";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+import nextI18NextConfig from "../../next-i18next.config.js";
 import GridLayout from "../layout/grid";
-import { getServerAuthSession } from "../server/auth";
 import Input from "../ui/input";
 import { languages } from "../utils/languages";
-import nextI18NextConfig from "../../next-i18next.config.js";
 
 
 const SignIn = ({ providers }: { providers: Provider }) => {

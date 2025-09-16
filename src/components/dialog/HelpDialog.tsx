@@ -40,7 +40,8 @@ export default function HelpDialog() {
     >
       <div>
         <p>
-        Edge Science - Generative AI for Enzyme Design at Edge.
+        ELN Copilot
+        - The AI agent for your electronic lab notebook, made by Edge Science Limited.
         </p>
         <br />
         {/* <p className="mt-2 text-center font-bold">{t("FOLLOW_THE_JOURNEY", { ns: "help" })}</p>
