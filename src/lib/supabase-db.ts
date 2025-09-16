@@ -99,10 +99,11 @@ interface InvitationRow {
 
 export class SupabaseDatabaseService {
   private supabase = supabase
+  private supabaseAdmin = supabaseAdmin
 
   // User operations - These work with Supabase auth.users table
   async getUserByEmail(email: string): Promise<DatabaseUser | null> {
-    const response = await this.supabase.auth.admin.listUsers({
+    const response = await this.supabaseAdmin.auth.admin.listUsers({
       page: 1,
       perPage: 1
     })
@@ -137,7 +138,7 @@ export class SupabaseDatabaseService {
   }
 
   async getUserById(id: string): Promise<DatabaseUser | null> {
-    const response = await this.supabase.auth.admin.getUserById(id)
+    const response = await this.supabaseAdmin.auth.admin.getUserById(id)
 
     if (response.error || !response.data?.user) return null
 
@@ -185,7 +186,7 @@ export class SupabaseDatabaseService {
   }
 
   async updateUser(id: string, updates: Partial<DatabaseUser>): Promise<DatabaseUser> {
-    const response = await this.supabase.auth.admin.updateUserById(id, {
+    const response = await this.supabaseAdmin.auth.admin.updateUserById(id, {
       user_metadata: {
         name: updates.name,
         avatar_url: updates.image,
