@@ -1,5 +1,5 @@
 import { message } from "antd";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { BuiltInProviderType } from "next-auth/providers";
@@ -238,13 +238,15 @@ const ProviderSignInButton = ({ detail }: { detail: ButtonDetail }) => {
 
 export default SignIn;
 
-export const getStaticProps: GetStaticProps = async ({ locale = "en" }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale = "en" }) => {
   const supportedLocales = languages.map((language) => language.code);
   const chosenLocale = supportedLocales.includes(locale) ? locale : "en";
 
+  const providers = (await getProviders()) ?? {};
+
   return {
     props: {
-      providers: (await getProviders()) ?? {},
+      providers,
       ...(await serverSideTranslations(chosenLocale, nextI18NextConfig.ns)),
     },
   };
