@@ -223,7 +223,8 @@ export class SupabaseDatabaseService {
 
   // Organization operations
   async getUserOrganizations(userId: string): Promise<OrganizationUser[]> {
-    const response = await this.supabase
+    // Use admin client to bypass RLS policies that might cause recursion
+    const response = await this.supabaseAdmin
       .from('organization_users')
       .select(`
         *,

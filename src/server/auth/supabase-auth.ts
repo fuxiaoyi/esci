@@ -151,17 +151,23 @@ export const authOptions: NextAuthOptions = {
           if (user) {
             session.user.superAdmin = user.superAdmin || false;
             
-            // Get user organizations
-            const organizations = await supabaseDb.getUserOrganizations(user.id);
-            session.user.organizations = organizations.map(org => ({
-              id: org.organizationId,
-              name: org.organizationId, // You might want to fetch organization name separately
-              role: org.role,
-            }));
+            // Safely get user organizations with better error handling
+            try {
+              const organizations = await supabaseDb.getUserOrganizations(user.id);
+              session.user.organizations = organizations.map(org => ({
+                id: org.organizationId,
+                name: org.organizationId, // You might want to fetch organization name separately
+                role: org.role,
+              }));
+            } catch (orgError) {
+              console.error("Failed to fetch user organizations:", orgError);
+              // Keep empty organizations array as fallback - don't let this break the session
+              session.user.organizations = [];
+            }
           }
         } catch (error) {
           console.error("Session callback error:", error);
-          // Keep the default values set above
+          // Keep the default values set above - don't let this break the session
         }
       }
       return session;

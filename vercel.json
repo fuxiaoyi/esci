@@ -11,11 +11,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "build": {
-    "env": {
-      "SKIP_ENV_VALIDATION": "1"
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",

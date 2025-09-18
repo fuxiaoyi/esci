@@ -32,10 +32,10 @@ export function useSettings(): SettingsModel {
 
   // We must handle language setting changes uniquely as the router must be the source of truth for the language
   useEffect(() => {
-    if (isMounted && router.isReady && router.locale !== modelSettings.language.code) {
+    if (isMounted && router.locale !== modelSettings.language.code) {
       updateSettings("language", findLanguage(router.locale || "en"));
     }
-  }, [isMounted, router.isReady, router.locale, modelSettings.language.code, updateSettings]);
+  }, [isMounted, router, modelSettings.language, updateSettings]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -57,11 +57,6 @@ export function useSettings(): SettingsModel {
       return;
     }
     
-    // Prevent language changes if we're already syncing from router
-    if (modelSettings.language.code !== router.locale) {
-      return;
-    }
-    
     // Clear any pending language change
     if (languageChangeTimeoutRef.current) {
       clearTimeout(languageChangeTimeoutRef.current);
@@ -75,27 +70,15 @@ export function useSettings(): SettingsModel {
           await i18n.changeLanguage(language.code);
           
           if (isMounted && router.isReady) {
-            // Double-check that we're not already on the target locale
-            if (router.locale === language.code) {
-              return;
+            // Only navigate if we're not already on the target locale
+            if (router.locale !== language.code) {
+              // Use Next.js built-in locale switching
+              // This will automatically handle the URL construction for i18n routing
+              await router.push(router.asPath, router.asPath, {
+                locale: language.code,
+                shallow: true, // Use shallow routing to prevent full page reload
+              });
             }
-            
-            // Check if we're already on the target URL to prevent hard navigation
-            const currentUrl = router.asPath;
-            const expectedUrl = `/${language.code}${currentUrl === '/' ? '' : currentUrl}`;
-            
-            if (currentUrl === expectedUrl) {
-              return;
-            }
-            
-            // Use Next.js built-in locale switching with the current path
-            const { pathname, asPath, query } = router;
-            
-            // Use replace to avoid adding to history stack
-            await router.replace({ pathname, query }, asPath, {
-              locale: language.code,
-              shallow: true, // Use shallow routing to prevent full page reload
-            });
           }
         } catch (error) {
           console.error('Error changing language:', error);
