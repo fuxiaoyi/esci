@@ -41,7 +41,7 @@ const config = {
       return {
           beforeFiles: [
               {
-                  source: '/((?!api|_next|_static|favicon.ico|zh|zhtw|en|hu|fr|de|it|ja|lt|ko|pl|pt|ro|ru|uk|es|nl|sk|hr|tr).*)',
+                  source: '/((?!api|_next|_static|favicon.ico|zh|zhtw|en|hu|fr|de|it|ja|lt|ko|pl|pt|ro|ru|uk|es|nl|sk|hr|tr|signin).*)',
                   has: [
                       {
                           type: 'host',
