@@ -34,7 +34,7 @@ const SignIn = ({ providers }: { providers: Provider }) => {
         <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-8 shadow-sm">
           <div className="text-center">
             <div className="mx-auto mb-6 inline-flex items-center space-x-2">
-              <Image src="/logos/E. Copi.png" width="40" height="40" alt="E. Copi Logo" />
+              <Image src="/logos/E.Copi.png" width="40" height="40" alt="E.Copi Logo" />
               <span className="text-2xl font-bold tracking-tight relative inline-flex items-center">
                 ELN Copilot
                 <span className="text-darkGreen-600">.</span>
