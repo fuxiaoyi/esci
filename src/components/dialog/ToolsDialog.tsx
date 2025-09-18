@@ -20,7 +20,7 @@ export const ToolsDialog: React.FC<{
       inline
       open={show}
       setOpen={setOpen}
-      title="Experimental Targets"
+      title="Experiment Data"
       actions={
         <>
           <button
@@ -39,7 +39,7 @@ export const ToolsDialog: React.FC<{
       <br></br> */}
       <div className="flex flex-col gap-4">
         <Input
-          label={`${t("Activity")}`}
+          label={`${t("Catalytic Efficiency (Kcat)")}`}
           value={settings.customActivity}
           name="Activity"
           type="range"
@@ -56,7 +56,7 @@ export const ToolsDialog: React.FC<{
           disabled={false}
         />
         <Input
-            label={`${t("Thermostability")}`}
+            label={`${t("Predicted Toxicity (ML score)")}`}
             value={settings.customThermostability}
             name="stability"
             type="range"
@@ -73,7 +73,7 @@ export const ToolsDialog: React.FC<{
             disabled={false}
         />
         <Input
-            label={`${t("Ph Stability")}`}
+            label={`${t("Structural Stability (TM Score)")}`}
             value={settings.customPh}
             name="Ph Stability"
             type="range"
@@ -82,7 +82,7 @@ export const ToolsDialog: React.FC<{
             }
             attributes={{
               min: 0,
-              max: 14,
+              max: 1,
               step: 0.1,
             }}
             // helpText={t("HIGHER_VALUES_MAKE_OUTPUT_MORE_RANDOM")}
@@ -95,7 +95,7 @@ export const ToolsDialog: React.FC<{
                 placeholder="protein sequence..."
                 helpText={
                   <span>
-                  Input the DNA sequence for the protein to be experimented here.
+                  Input the Amino Acid sequence for the enzyme:
                   </span>
                 }
                 type="text"
@@ -114,7 +114,7 @@ export const ToolsDialog: React.FC<{
                 placeholder="substrate molecular..."
                 helpText={
                   <span>
-                  Input the substrate molecular to be experimented here.
+                  Input the SMILES string of the substrate here:
                   </span>
                 }
                 type="text"
